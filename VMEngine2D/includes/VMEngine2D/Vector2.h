@@ -2,7 +2,8 @@
 
 class Vector2 {
 public:
-	//functions
+	//initialise vectors with 0 and y
+	Vector2() { x = y = 0.0f; }
 	Vector2(float x, float y);
 	~Vector2() {}
 

@@ -149,6 +149,9 @@
     <ClCompile Include="source\VMEngine2D\AnimStateMachine.cpp" />
     <ClCompile Include="source\VMEngine2D\Game.cpp" />
     <ClCompile Include="source\Source.cpp" />
+    <ClCompile Include="source\VMEngine2D\GameObject.cpp" />
+    <ClCompile Include="source\VMEngine2D\GameObjects\Character.cpp" />
+    <ClCompile Include="source\VMEngine2D\Input.cpp" />
     <ClCompile Include="source\VMEngine2D\Texture.cpp" />
     <ClCompile Include="source\VMEngine2D\Vector2.cpp" />
   </ItemGroup>
@@ -156,6 +159,9 @@
     <ClInclude Include="includes\VMEngine2D\Animation.h" />
     <ClInclude Include="includes\VMEngine2D\AnimStateMachine.h" />
     <ClInclude Include="includes\VMEngine2D\Game.h" />
+    <ClInclude Include="includes\VMEngine2D\GameObject.h" />
+    <ClInclude Include="includes\VMEngine2D\GameObjects\Character.h" />
+    <ClInclude Include="includes\VMEngine2D\Input.h" />
     <ClInclude Include="includes\VMEngine2D\Texture.h" />
     <ClInclude Include="includes\VMEngine2D\Vector2.h" />
   </ItemGroup>

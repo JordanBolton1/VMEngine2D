@@ -1,5 +1,9 @@
 #include "VMEngine2D\Game.h"
 #include "VMEngine2D/Vector2.h"
+#include "VMEngine2D/AnimStateMachine.h"
+#include "VMEngine2D/Input.h"
+#include "VMEngine2D/GameObjects/Character.h"
+#include "VMEngine2D/GameObject.h"
 #include "VMEngine2D/Animation.h"
 using namespace std;
 
@@ -26,16 +30,8 @@ Game::Game()
 	SdlWindow = nullptr;
 	DeltaTime = 0.0;
 	SdlRenderer = nullptr;
+	PlayerInput = nullptr;
 
-	//Intialise Animation Objects
-	Animation1 = nullptr;
-	Animation2 = nullptr;
-	Animation3 = nullptr;
-	Animation4 = nullptr;
-	Animation5 = nullptr;
-
-	//Overlay Image Objects
-	EngineImage = nullptr;
 }
 
 Game::~Game()
@@ -88,24 +84,20 @@ void Game::Start(const char* WTitle, bool bFullScreen, int WWidth, int WHeight)
 		return;
 	}
 
+	//create the input in the inisialisation stage
+	PlayerInput = new Input();
+
 	Run();
 }
 
 void Game::ProcessInput()
 {
-	//This stores the inputs as an event
-	SDL_Event PollEvent;
+	//this must run before all other process inputs
+	PlayerInput->ProcessInput();
 
-	//This will listen to the event and end the loop after all inputs are detected.
-	while (SDL_PollEvent(&PollEvent)) {
-		//detect the type of event that was input
-		switch (PollEvent.type) {
-		case SDL_QUIT:
-			bIsGameOver = true;
-			break;
-		default:
-			break;
-		}
+//process the input  of each gameobject
+	for(GameObject* SingleGameObject : AllGameObjects){
+		SingleGameObject->ProcessInput(PlayerInput);
 	}
 }
 
@@ -133,13 +125,13 @@ void Game::Draw()
 	SDL_RenderClear(SdlRenderer);
 
 	//do anything that needs to be drawn to the screen here
-	Animation1->Draw(SdlRenderer, Vector2(100.0f, 100.0f), 2.0f, false);
-	Animation2->Draw(SdlRenderer, Vector2(300.0f, 100.0f), 1.0f, false);
-	Animation3->Draw(SdlRenderer, Vector2(500.0f, 300.f), 3.0f, false);
-	Animation4->Draw(SdlRenderer, Vector2(100.0f, 300.0f), 5.0f, true);
-	Animation5->Draw(SdlRenderer, Vector2(750.0f, 120.0f), 5.0f, false);
-	EngineImage->Draw(SdlRenderer, Vector2(750.0f, 110.0f), 5.0f, false);
-	ShipImage->Draw(SdlRenderer, Vector2(750.0f, 100.0f), 5.0f, false);
+
+	//cycle through all of the gameObjects in the ALLGameObjects array
+	//each loop reassign the singleGameobject
+	for (GameObject* SingleGameObject : AllGameObjects) {
+		//each loop run the draw function for each gameobject
+		SingleGameObject->Draw(SdlRenderer);
+	}
 
 	//Show the new frame
 	SDL_RenderPresent(SdlRenderer);
@@ -166,7 +158,9 @@ void Game::CloseGame()
 {
 	//handle game asset deletion
 	cout << "Deleting Game Assets..." << endl;
-	delete Animation1;
+
+	//delete player input from memory
+	delete PlayerInput;
 
 	//Handle SDL unintialisation
 	cout << "Cleaning up SDL" << endl;
@@ -178,6 +172,9 @@ void Game::BeginPlay()
 {
 	cout << "Load Game Assets..." << endl;
 
+	Character* MyCharacter = new Character(Vector2(100.0f, 100.0f));
+	
+
 	//Round Shield Animation
 	STAnimationData AnimData1 = STAnimationData();
 	AnimData1.FPS = 30;
@@ -186,7 +183,7 @@ void Game::BeginPlay()
 	AnimData1.StartFrame = 0;
 	AnimData1.EndFrame = 11;
 
-	Animation1 = new Animation(SdlRenderer,
+	MyCharacter->AddAnimation(SdlRenderer,
 		"Content/shipshields/Main Ship - Shields - Round Shield.png",
 		AnimData1);
 
@@ -197,12 +194,12 @@ void Game::BeginPlay()
 	AnimData2.StartFrame = 0;
 	AnimData2.EndFrame = 9;
 
-	Animation2 = new Animation(SdlRenderer,
+	MyCharacter->AddAnimation(SdlRenderer,
 		"Content/shipshields/Main Ship - Shields - Invincibility Shield.png",
 		AnimData2);
 
 	//Front Shield Animation
-	Animation3 = new Animation(SdlRenderer,
+	MyCharacter->AddAnimation(SdlRenderer,
 		"Content/shipshields/Main Ship - Shields - Front Shield.png",
 		AnimData2);
 
@@ -213,7 +210,7 @@ void Game::BeginPlay()
 	AnimData4.StartFrame = 0;
 	AnimData4.EndFrame = 6;
 
-	Animation4 = new Animation(SdlRenderer,
+	MyCharacter->AddAnimation(SdlRenderer,
 		"Content/shipshields/Main Ship - Weapons - Auto Cannon.png",
 		AnimData4);
 
@@ -224,11 +221,11 @@ void Game::BeginPlay()
 	StaticData.StartFrame = 0;
 	StaticData.EndFrame = 0;
 
-	EngineImage = new Animation(SdlRenderer,
+	MyCharacter->AddAnimation(SdlRenderer,
 		"Content/shipshields/Main Ship - Engines - Base Engine.png",
 		StaticData);
 
-	ShipImage = new Animation(SdlRenderer,
+	MyCharacter->AddAnimation(SdlRenderer,
 		"Content/shipshields/Main Ship - Base - Full health.png",
 		StaticData);
 
@@ -238,7 +235,9 @@ void Game::BeginPlay()
 	AnimData5.StartFrame = 0;
 	AnimData5.EndFrame = 2;
 
-	Animation5 = new Animation(SdlRenderer,
+	MyCharacter->AddAnimation(SdlRenderer,
 		"Content/shipshields/Main Ship - Engines - Base Engine - Idle.png",
 		AnimData5);
+
+	AllGameObjects.push_back(MyCharacter);
 }

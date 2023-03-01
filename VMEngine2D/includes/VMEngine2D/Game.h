@@ -1,8 +1,10 @@
 #pragma once
 #include <iostream>
-#include "sdl2/SDL.h"
+#include<vector>
+#include "SDL2/SDL.h"
 
-class Animation;
+class GameObject;
+class Input;
 
 class Game {
 public:
@@ -24,6 +26,10 @@ public:
 	//for average timing
 	float GetFDeltaTime() const { return static_cast<float>(DeltaTime); }
 
+	//sets bGameOver to true which closes the app
+	void CloseApp() { bIsGameOver = true; }
+	
+	
 private:
 	//Constructor
 	Game();
@@ -63,14 +69,8 @@ private:
 	//hold the time between each frame
 	double DeltaTime;
 
-	//Reference to Animation Class
-	Animation* Animation1;
-	Animation* Animation2;
-	Animation* Animation3;
-	Animation* Animation4;
-	Animation* Animation5;
+	Input* PlayerInput;
 
-	//Reference to Overlay Images
-	Animation* EngineImage;
-	Animation* ShipImage;
+	//gameobject stack
+	std::vector<GameObject*> AllGameObjects;
 };
