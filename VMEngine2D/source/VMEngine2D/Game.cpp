@@ -2,7 +2,8 @@
 #include "VMEngine2D/Vector2.h"
 #include "VMEngine2D/AnimStateMachine.h"
 #include "VMEngine2D/Input.h"
-#include "VMEngine2D/GameObjects/Character.h"
+#include "VMEngine2D/GameObjects/Characters/Player.h"
+#include "VMEngine2D/GameObjects/Characters/Enemy.h"
 #include "VMEngine2D/GameObject.h"
 #include "VMEngine2D/Animation.h"
 using namespace std;
@@ -115,6 +116,11 @@ void Game::Update()
 	DeltaTime = DeltaMil / 1000.0;
 	//set the last tick time as the current time for the next frame
 	LastTickTime = CurrentTickTime;
+
+	//run last gameobject logic
+	for (GameObject* SingleGameObject : AllGameObjects) {
+		SingleGameObject->Update();
+	}
 }
 
 void Game::Draw()
@@ -172,72 +178,10 @@ void Game::BeginPlay()
 {
 	cout << "Load Game Assets..." << endl;
 
-	Character* MyCharacter = new Character(Vector2(100.0f, 100.0f));
-	
-
-	//Round Shield Animation
-	STAnimationData AnimData1 = STAnimationData();
-	AnimData1.FPS = 30;
-	AnimData1.MaxFrames = 12;
-	//the frames should be auumed as index by array values
-	AnimData1.StartFrame = 0;
-	AnimData1.EndFrame = 11;
-
-	MyCharacter->AddAnimation(SdlRenderer,
-		"Content/shipshields/Main Ship - Shields - Round Shield.png",
-		AnimData1);
-
-	//Invinciblity Shield Animation
-	STAnimationData AnimData2 = STAnimationData();
-	AnimData2.FPS = 30;
-	AnimData2.MaxFrames = 10;
-	AnimData2.StartFrame = 0;
-	AnimData2.EndFrame = 9;
-
-	MyCharacter->AddAnimation(SdlRenderer,
-		"Content/shipshields/Main Ship - Shields - Invincibility Shield.png",
-		AnimData2);
-
-	//Front Shield Animation
-	MyCharacter->AddAnimation(SdlRenderer,
-		"Content/shipshields/Main Ship - Shields - Front Shield.png",
-		AnimData2);
-
-	//Cannon Animation
-	STAnimationData AnimData4 = STAnimationData();
-	AnimData4.FPS = 30;
-	AnimData4.MaxFrames = 7;
-	AnimData4.StartFrame = 0;
-	AnimData4.EndFrame = 6;
-
-	MyCharacter->AddAnimation(SdlRenderer,
-		"Content/shipshields/Main Ship - Weapons - Auto Cannon.png",
-		AnimData4);
-
-	//Ship + Engine Animation
-	STAnimationData StaticData = STAnimationData();
-	StaticData.FPS = 0;
-	StaticData.MaxFrames = 0;
-	StaticData.StartFrame = 0;
-	StaticData.EndFrame = 0;
-
-	MyCharacter->AddAnimation(SdlRenderer,
-		"Content/shipshields/Main Ship - Engines - Base Engine.png",
-		StaticData);
-
-	MyCharacter->AddAnimation(SdlRenderer,
-		"Content/shipshields/Main Ship - Base - Full health.png",
-		StaticData);
-
-	STAnimationData AnimData5 = STAnimationData();
-	AnimData5.FPS = 30;
-	AnimData5.MaxFrames = 3;
-	AnimData5.StartFrame = 0;
-	AnimData5.EndFrame = 2;
-
-	MyCharacter->AddAnimation(SdlRenderer,
-		"Content/shipshields/Main Ship - Engines - Base Engine - Idle.png",
-		AnimData5);
-
+	Player* MyCharacter = new Player(Vector2(100.0f, 100.0f), SdlRenderer);
+	Enemy* Bomber = new Enemy(Vector2(300.0f, 100.0f), SdlRenderer);
+	// ad the characetr into the gaameobject stack
+	AllGameObjects.push_back(Bomber);
 	AllGameObjects.push_back(MyCharacter);
+	
 }

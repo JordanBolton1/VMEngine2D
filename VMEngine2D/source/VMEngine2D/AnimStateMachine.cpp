@@ -20,12 +20,12 @@ void AnimStateMachine::AddAnimation(SDL_Renderer* Renderer, const char* SpriteSh
 	Animations.push_back(NewAnim);
 }
 
-void AnimStateMachine::Draw(SDL_Renderer* Renderer, unsigned int AnimIndex, Vector2 Position, float Scale, bool bFlip)
+void AnimStateMachine::Draw(SDL_Renderer* Renderer, unsigned int AnimIndex, Vector2 Position,double Rotation, float Scale, bool bFlip)
 {
 	//make sure there is an item in the array at that index
 	if (Animations.size() > AnimIndex && Animations[AnimIndex] != nullptr) {
 		//draw the correct animations based on the index
-		Animations[AnimIndex]->Draw(Renderer, Position, Scale, bFlip);
+		Animations[AnimIndex]->Draw(Renderer, Position,Rotation, Scale, bFlip);
 	}
 }
 

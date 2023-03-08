@@ -17,9 +17,10 @@ public:
 	void Draw(
 		SDL_Renderer* SdlRenderer,	// @param 1 - Renderer
 		Vector2 Position,			// @param 2 - The position on the screen
-		SDL_Rect* SourceRect,		// @param 3 - The clip amount of the texture
-		float Scale,				// @param 4 - How much to scale the image
-		bool bFlip					// @param 5 - If it should flip horizontally
+		double Rotation,				// @param 3 - Rotation of the Texture
+		SDL_Rect* SourceRect,		// @param 4 - The clip amount of the texture
+		float Scale,				// @param 5 - How much to scale the image
+		bool bFlip					// @param 6 - If it should flip horizontally
 	);
 
 	//get the width and height of the texture

@@ -72,11 +72,11 @@ void Animation::OnFrameUpdate()
 
 }
 
-void Animation::Draw(SDL_Renderer* Renderer, Vector2 Position, float Scale, bool bFlip)
+void Animation::Draw(SDL_Renderer* Renderer, Vector2 Position,double Rotation, float Scale, bool bFlip)
 {
 	UpdateAnimationTimer();
 
 	//draw the texture with clip rect and updated frame pos
-	SpriteSheet->Draw(Renderer, Position, &FramePos, Scale, bFlip);
+	SpriteSheet->Draw(Renderer, Position,Rotation, &FramePos, Scale, bFlip);
 
 }

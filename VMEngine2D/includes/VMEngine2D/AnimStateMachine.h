@@ -12,7 +12,7 @@ public:
 	void AddAnimation(SDL_Renderer* Renderer, const char* SpriteSheetPath, STAnimationData AnimationData);
 
 	// draw the animation based on the anim index via the 
-	void Draw(SDL_Renderer* Renderer, unsigned int AnimIndex, Vector2 Position, float Scale, bool bFlip);
+	void Draw(SDL_Renderer* Renderer, unsigned int AnimIndex, Vector2 Position,double Rotation, float Scale, bool bFlip);
 
 	std::vector<Animation*>GetAnimations() const;
 

@@ -1,6 +1,5 @@
 #include"VMEngine2D/GameObjects/Character.h"
 #include "VMEngine2D/AnimStateMachine.h"
-#include "VMEngine2D/Input.h"
 #include <iostream>
 
 Character::Character(Vector2 StartPosition)
@@ -22,27 +21,12 @@ Character::~Character()
 	std::cout << "Char destroyed" << std::endl;
 }
 
-void Character::ProcessInput(Input* PlayerInput)
-{
 
-	//set the animindex to play the first anim by default
-	AnimIndex = 0;
-	// when holding w play second animation
-	if (PlayerInput->IsKeyDown(SDL_SCANCODE_W)) {
-		AnimIndex = 1;
-	}
-
-}
-
-void Character::Update()
-{
-
-}
 
 void Character::Draw(SDL_Renderer* Renderer)
 {
 	//draw the animations for the character
-	CharacterAnimations->Draw(Renderer, AnimIndex, Position, Scale, bFlipped);
+	CharacterAnimations->Draw(Renderer, AnimIndex, Position,Rotation, Scale, bFlipped);
 
 }
 

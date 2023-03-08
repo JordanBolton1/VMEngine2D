@@ -22,4 +22,10 @@ public:
 protected:
 	//screen position the gameObject
 	Vector2 Position;
+
+	//scale of the object
+	float Scale;
+
+	//rotaation of objerct
+	double Rotation;
 };

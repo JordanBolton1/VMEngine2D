@@ -17,7 +17,7 @@ public:
 
 	void OnFrameUpdate();
 
-	void Draw(SDL_Renderer* Renderer, Vector2 Position, float Scale, bool bFlip);
+	void Draw(SDL_Renderer* Renderer, Vector2 Position,double Rotation, float Scale, bool bFlip);
 
 private:
 	//hold the image of the spritesheet 

@@ -139,11 +139,7 @@ void Vector2::Normalise()
 {
 	//if the length is above 0.0f then /= the x and y by the length of the vector
 	// This will change the vector
-	//thanks to operator/=, *this /= Length() works also
-	if (Length() != 0.0f) {
-		this->x /= Length();
-		this->y /= Length();
-	}
+	*this /= std::max(Length(), 1.0f);
 }
 
 Vector2 Vector2::Normalised()
@@ -152,7 +148,7 @@ Vector2 Vector2::Normalised()
 
 	Vector2 Result = Vector2(0.0f, 0.0f);
 
-	Result = *this / Length();
+	Result = *this / std::max(Length(),1.0f);
 
 	return Result;
 

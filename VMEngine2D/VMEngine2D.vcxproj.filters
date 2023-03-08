@@ -42,6 +42,12 @@
     <ClCompile Include="source\VMEngine2D\GameObjects\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\VMEngine2D\Game.h">
@@ -66,6 +72,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="includes\VMEngine2D\GameObjects\Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
