@@ -1,12 +1,14 @@
 #include "VMEngine2D/GameObjects/Characters/Enemy.h"
 #include "VMEngine2D/AnimStateMachine.h"
 #include "VMEngine2D/Game.h"
+#include "VMEngine2D/GameObjects/Components/PhysicsComponent.h"
 
 Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPosition)
 {
 	Scale = 3.0f;
-	Direction = Vector2(0.0f, 1.0f);
 	Rotation = 180.0;
+	MovementDir = Vector2(0.0f, 1.0f);
+	Physics->MaxVelocity = 300.0f;
 
 	STAnimationData Animdata1 = STAnimationData();
 
@@ -21,19 +23,17 @@ Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPo
 	AddAnimation(Renderer, "Content/Narian/Engine Base/Nairan - Bomber - Engine.png", Animdata1);
 }
 
-Enemy::~Enemy()
-{
-}
 
 void Enemy::Update()
 {
-	Vector2 MoveDir = Direction * MaxMoveSpeed;
-	//move the enemy based the on the movedir
-	Position += MoveDir * Game::GetGameInstance().GetFDeltaTime();
+	Character::Update();
+
+	Physics->AddForce(MovementDir, 300.0f);
 
 	//teleport tthe enemy back up if the reach the bottom of screen
 	if (Position.y > 540.0f) {
 		Position.y = -64.0f * Scale;
+		//delete this;
 	}
 }
 

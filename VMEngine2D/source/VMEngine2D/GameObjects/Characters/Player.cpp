@@ -2,13 +2,15 @@
 #include "VMEngine2D/Input.h"
 #include "VMEngine2D/AnimStateMachine.h"
 #include"VMEngine2D/Game.h"
+#include "VMEngine2D/GameObjects/Components/PhysicsComponent.h"
 
 Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer)
 	:Character(StartPosition)
 {
 	BoostersIndex = PlayerAnims :: BOOSTERS_IDLE;
 	Scale = 3.0f;
-	MaxMoveSpeed = 500.0f;
+	Physics->MaxVelocity = 300.0f;
+	Physics->Drag = 5.0f;
 	
 	STAnimationData AnimData1 = STAnimationData();
 	AnimData1.FPS = 0;
@@ -48,33 +50,33 @@ void Player::ProcessInput(Input* PlayerInput)
 	//set the animindex to play the first anim by default
 	BoostersIndex = PlayerAnims ::BOOSTERS_IDLE;
 
-	InputDir = Vector2::Zero();
+	MovementDir = Vector2::Zero();
 
 	Rotation = 0.0;
 
 	//update input direction
 	if (PlayerInput->IsKeyDown(SDL_SCANCODE_W)) {
 		//set input y to up
-		InputDir.y = -1.0;
+		MovementDir.y = -1.0;
 	}
 	if (PlayerInput->IsKeyDown(SDL_SCANCODE_S)) {
 		//set input y to down
-		InputDir.y = 1.0;
+		MovementDir.y = 1.0;
 	}
 	if (PlayerInput->IsKeyDown(SDL_SCANCODE_A)) {
 		//set input x to left
-		InputDir.x = -1.0;
+		MovementDir.x = -1.0;
 
 		Rotation = -90.0;
 	}
 	if (PlayerInput->IsKeyDown(SDL_SCANCODE_D)) {
 		//set input x to right
-		InputDir.x = 1.0;
+		MovementDir.x = 1.0;
 
 		Rotation = 90.0;
 	}
 		
-	if (InputDir.Length() > 0.0f) {
+	if (MovementDir.Length() > 0.0f) {
 		BoostersIndex = PlayerAnims::BOOSTERS_POWERING;
 	}
 
@@ -82,11 +84,13 @@ void Player::ProcessInput(Input* PlayerInput)
 
 void Player::Update()
 {
-	//set the diirection based on inpput and move speed
-	Vector2 Direction = InputDir.Normalised() * MaxMoveSpeed;
-	//move the player basee on time
-	Position += Direction * Game::GetGameInstance().GetFDeltaTime();
+	//call o the parent funtion
+	Character::Update();
+
+	Physics->AddForce(MovementDir, 10000.0f);
 }
+
+
 
 void Player::Draw(SDL_Renderer* Renderer)
 {

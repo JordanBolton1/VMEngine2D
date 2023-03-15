@@ -27,9 +27,6 @@ public :
 
 protected:
 
-	//the direction of player based on input
-	Vector2 InputDir;
-
 	//play booster animation
 	unsigned int BoostersIndex;
 };

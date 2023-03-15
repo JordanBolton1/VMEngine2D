@@ -1,15 +1,17 @@
 #include"VMEngine2D/GameObjects/Character.h"
 #include "VMEngine2D/AnimStateMachine.h"
+#include "VMEngine2D/GameObjects/Components/PhysicsComponent.h"
 #include <iostream>
 
 Character::Character(Vector2 StartPosition)
 {
 	CharacterAnimations = new AnimStateMachine();
 	AnimIndex = 0;
-	MaxMoveSpeed = 150.0f;
-	Scale = 2.0f;
 	bFlipped = false;
 	Position = StartPosition;
+
+	//create a new physics Component and store it
+	Physics = new PhysicsComponent(this);
 
 	std::cout << "Char created" << std::endl;
 }
@@ -19,6 +21,11 @@ Character::~Character()
 	//remove AnimStateMachine from memory
 	delete CharacterAnimations;
 	std::cout << "Char destroyed" << std::endl;
+}
+
+void Character::Update()
+{
+	GameObject::Update();
 }
 
 

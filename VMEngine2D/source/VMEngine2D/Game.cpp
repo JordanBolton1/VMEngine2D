@@ -121,6 +121,29 @@ void Game::Update()
 	for (GameObject* SingleGameObject : AllGameObjects) {
 		SingleGameObject->Update();
 	}
+
+	//set a static timer to count up based on deltatime
+	//static variables dont reinitialise
+	static double SpawnTimer = 0.0;
+	SpawnTimer += DeltaTime;
+
+	if (SpawnTimer > 5.0) {
+		//set up
+		int WinWidth, WinHeight = 0;
+
+		SDL_GetWindowSize(SdlWindow, &WinWidth, &WinHeight);
+
+		WinWidth += 1;
+		WinWidth -= 128;
+
+		int SpawnEnemyX = rand() %WinWidth;
+
+		Enemy* NewEnemy = new Enemy(Vector2(SpawnEnemyX,-128.0f), SdlRenderer);
+
+		AllGameObjects.push_back(NewEnemy);
+
+		SpawnTimer = 0.0;
+	}
 }
 
 void Game::Draw()

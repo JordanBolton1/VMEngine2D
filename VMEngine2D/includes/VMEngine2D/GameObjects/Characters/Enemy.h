@@ -10,13 +10,11 @@ class Enemy : public Character {
 
 public: 
 	Enemy(Vector2 StartPosition, SDL_Renderer*Renderer);
-	virtual ~Enemy();
+
 
 	virtual void Update() override;
 
 	virtual void Draw(SDL_Renderer* Renderer) override;
 
 private:
-	//hold a constant direction for the enemy
-	Vector2 Direction;
 };
