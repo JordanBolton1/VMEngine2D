@@ -11,6 +11,7 @@ Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPo
 	Physics->MaxVelocity = 300.0f;
 
 	STAnimationData Animdata1 = STAnimationData();
+	STAnimationData Animdata2 = STAnimationData();
 
 	//add the ship
 	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Bomber - Base.png", Animdata1);
@@ -21,7 +22,19 @@ Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPo
 	Animdata1.EndFrame = 7;
 
 	AddAnimation(Renderer, "Content/Narian/Engine Base/Nairan - Bomber - Engine.png", Animdata1);
+
+
+	//add the ship
+	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Dreadnought - Base.png", Animdata2);
+
+	//set anim data for the booster animation
+	Animdata2.FPS = 24;
+	Animdata2.MaxFrames = 8;
+	Animdata2.EndFrame = 7;
+
+	AddAnimation(Renderer, "Content/Narian/Engine Base/Nairan - Dreadnought - Engine.png", Animdata2);
 }
+
 
 
 void Enemy::Update()
