@@ -3,6 +3,7 @@
 #include "VMEngine2D/AnimStateMachine.h"
 #include"VMEngine2D/Game.h"
 #include "VMEngine2D/GameObjects/Components/PhysicsComponent.h"
+#include "VMEngine2D/GameObjects/Components/CollisionComponent.h"
 
 Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer)
 	:Character(StartPosition)
@@ -88,6 +89,23 @@ void Player::Update()
 	Character::Update();
 
 	Physics->AddForce(MovementDir, 10000.0f);
+
+	if (Collision->IsOverlappingTag("Enemy")) {
+		bOverlapDetected = true;
+
+		//getting all overlapped enemis and destroy them
+		for (CollisionComponent* Enemy : Collision->GetOverLappedByTag("Enemy")) {
+			//if enemy is not being destroyed
+			if (!Enemy->GetOwner()->ShouldDestroy()) {
+				std::cout << "KILLLLLL" << std::endl;
+				Enemy->GetOwner()->DestroyGameObject();
+			}
+			
+		}
+	}
+	else {
+		bOverlapDetected = false;
+	}
 }
 
 

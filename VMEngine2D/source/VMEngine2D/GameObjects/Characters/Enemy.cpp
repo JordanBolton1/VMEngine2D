@@ -5,6 +5,7 @@
 
 Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPosition)
 {
+	Tag = "Enemy";
 	Scale = 3.0f;
 	Rotation = 180.0;
 	MovementDir = Vector2(0.0f, 1.0f);

@@ -5,6 +5,7 @@
 class AnimStateMachine;
 struct STAnimationData;
 class PhysicsComponent;
+class CollisionComponent;
 
 class Character : public GameObject {
 
@@ -37,4 +38,11 @@ protected:
 	//store a 
 	PhysicsComponent* Physics;
 
+	//store a recference
+	CollisionComponent* Collision;
+
+	//register the overlap as detected and change to green
+	bool bOverlapDetected;
+
+	bool bDebugCollision;
 };

@@ -5,6 +5,10 @@ GameObject::GameObject()
 {
 	Scale = 1.0f;
 	Rotation = 0.0;
+	Tag = "";
+	bShouldDestroy = false;
+
+
 	std::cout << "game obj created"<< std::endl;
 }
 

@@ -27,6 +27,12 @@ public:
 	//add a component intop the cmponent stack
 	void AddComponent(Components* NewComponent);
 
+	const char* GetTag() const { return Tag; }
+	// set the gameobject to be destriyed in thehandle garbage function
+	void DestroyGameObject() { bShouldDestroy = true; }
+
+	//get the should dstroy bool
+	bool ShouldDestroy() const { return bShouldDestroy; }
 protected:
 	//scale of the object
 	float Scale;
@@ -35,8 +41,15 @@ protected:
 	//store an array of components
 	ComponentStack AllComponents;
 
+	//tag the gameobject for detection
+	const char* Tag;
+
 public:
 	//screen position the gameObject
 	Vector2 Position;
+
+private:
+	//if set game should destroy the object
+	bool bShouldDestroy;
 
 };
