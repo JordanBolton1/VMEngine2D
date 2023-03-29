@@ -4,8 +4,6 @@
 
 CollisionComponent::CollisionComponent(GameObject* OwnerObject) : Components(OwnerObject)
 {
-	//add itself into the game collsion aray
-	Game::GetGameInstance().AddCollisionTOGame(this);
 
 }
 
@@ -26,6 +24,8 @@ CollisionComponent::~CollisionComponent()
 
 void CollisionComponent::Update()
 {
+	//run parent class update
+	Components::Update();
 
 	//follow the position of the parent game object
 	Dimensions.Position = OwnerObject->Position;
@@ -50,7 +50,7 @@ void CollisionComponent::Update()
 		ColRect.h = Dimensions.Height;
 
 		//check if the collider is in the overlapped collsions
-		ColIterator It = std::find(OverlappedCollisions.begin(), OverlappedCollisions.end(), OtherCol);
+		std::vector<CollisionComponent*>::iterator It = std::find(OverlappedCollisions.begin(), OverlappedCollisions.end(), OtherCol);
 
 
 		//check if this collision is interceting with the other collision
@@ -109,4 +109,12 @@ void CollisionComponent::RemoveCollisionFromOverlapped(CollisionComponent* Colli
 	//erase the component from the overlapped collisions and resze the aarrY
 	OverlappedCollisions.erase(std ::remove(OverlappedCollisions.begin(), OverlappedCollisions.end(), Collision),
 		OverlappedCollisions.end());
+}
+
+void CollisionComponent::OnActivated()
+{
+	//add itself into the game collsion aray
+	Game::GetGameInstance().AddCollisionTOGame(this);
+
+	std::cout << "Colision activate" << std::endl;
 }

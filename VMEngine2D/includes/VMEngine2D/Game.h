@@ -6,10 +6,9 @@
 class GameObject;
 class Input;
 class CollisionComponent;
+class GameStateMachine;
 
-//at compile time the compiler will return the type definition into the proper one
-typedef std::vector<CollisionComponent*>::iterator ColIterator;
-typedef std::vector<GameObject*> ::iterator GOIterator;
+
 
 class Game {
 public:
@@ -41,7 +40,7 @@ public:
 	void RemoveCollsionFromGame(CollisionComponent* Colldier);
 
 	//return all the colldiers iin thee game
-	std::vector<CollisionComponent*> GetGameCollider() const { return AllColliders; }
+	std::vector<CollisionComponent*> GetGameCollider() const;
 private:
 	//Constructor
 	Game();
@@ -85,11 +84,7 @@ private:
 
 	Input* PlayerInput;
 
-	//gameobject stack
-	std::vector<GameObject*> AllGameObjects;
-
-	//collision stack
-	std::vector<CollisionComponent*> AllColliders;
-
+	//store the c
+	GameStateMachine* GameStates;
 
 };

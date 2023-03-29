@@ -30,6 +30,10 @@ public:
 	//remove a collider from the overlapped collisions
 	void RemoveCollisionFromOverlapped(CollisionComponent* Collision);
 
+protected:
+	//
+	void OnActivated() override;
+
 public:
 
 	//Dimension and position for the collision
