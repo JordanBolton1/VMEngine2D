@@ -34,7 +34,6 @@ void Enemy::Update()
 	//teleport tthe enemy back up if the reach the bottom of screen
 	if (Position.y > 540.0f) {
 		Position.y = -64.0f * Scale;
-		//delete this;
 	}
 }
 

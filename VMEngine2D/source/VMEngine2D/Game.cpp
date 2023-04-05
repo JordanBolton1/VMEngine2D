@@ -3,6 +3,10 @@
 #include "VMEngine2D/Input.h"
 #include "VMEngine2D/GameObject.h"
 #include "VMEngine2D/GameState.h"
+#include "VMEngine2D/GameStates/PlayState.h"
+
+#include "SDL2/SDL_ttf.h"
+
 using namespace std;
 
 Game& Game::GetGameInstance()
@@ -21,22 +25,6 @@ void Game::DestroyGameInstance()
 	delete GameInstance;
 }
 
-void Game::AddCollisionTOGame(CollisionComponent* Collider)
-{
-	//the game will add the coollider to the current game state
-	GameStates->GetCurrentState()->AddCollisionToGameState(Collider);
-
-	std::cout << "added collision" << std::endl;
-}
-
-void Game::RemoveCollsionFromGame(CollisionComponent* Collider)
-{
-	//the game will remove the coollider to the current game state
-	GameStates->GetCurrentState()->RemoveCollisionFromGameState(Collider);
-
-	std::cout << "removed collision" << std::endl;
-}
-
 std::vector<CollisionComponent*> Game::GetGameCollider() const
 {
 	return GameStates->GetCurrentState()->GetGameStateCollisions();
@@ -50,8 +38,8 @@ Game::Game()
 	DeltaTime = 0.0;
 	SdlRenderer = nullptr;
 	PlayerInput = nullptr;
-
 	GameStates = nullptr;
+	GameScore = 0;
 }
 
 Game::~Game()
@@ -88,8 +76,8 @@ void Game::Start(const char* WTitle, bool bFullScreen, int WWidth, int WHeight)
 	if (SdlWindow == nullptr) {
 		//Error log
 		cout << "SDL Window Creation failed: " << SDL_GetError() << endl;
-		//Unintialise SDL
-		SDL_Quit();
+	
+		CloseGame();
 		return;
 	}
 
@@ -97,10 +85,16 @@ void Game::Start(const char* WTitle, bool bFullScreen, int WWidth, int WHeight)
 	SdlRenderer = SDL_CreateRenderer(SdlWindow, 0, -1);
 	if (SdlRenderer == nullptr) {
 		cout << "SDL Renderer creation failed: " << SDL_GetError() << endl;
-		//remove the window
-		SDL_DestroyWindow(SdlWindow);
-		//uninitalise SDL
-		SDL_Quit();
+
+		CloseGame();
+		return;
+	}
+	
+	//initialise ttf and if equals -1 it fails 0 means it succeeds
+	if (TTF_Init() < 0) {
+		cout << "sld ttf failed" << TTF_GetError() << endl;
+
+		CloseGame();
 		return;
 	}
 
@@ -140,25 +134,6 @@ void Game::Update()
 	//run the update of the curreent dtate and pass in flaot deltatime
 	GameStates->GetCurrentState()->Update(GetFDeltaTime());
 
-	static bool bPressed = false;
-
-	if (PlayerInput->IsKeyDown(SDL_SCANCODE_1)&& !bPressed) {
-		GameState* NewGame = new GameState(SdlWindow, SdlRenderer);
-		GameStates->PushState(NewGame);
-		bPressed = true;
-	}
-	else if (!PlayerInput->IsKeyDown(SDL_SCANCODE_1) && bPressed) {
-		bPressed = false;
-	}
-
-	static bool bPressed2 = false;
-	if (PlayerInput->IsKeyDown(SDL_SCANCODE_2) && !bPressed2) {
-		GameStates->PopState();
-		bPressed2 = true;
-	}
-	else if (!PlayerInput->IsKeyDown(SDL_SCANCODE_2) && bPressed2) {
-		bPressed2 = false;
-	}
 }
 
 void Game::Draw()
@@ -195,24 +170,34 @@ void Game::Run()
 
 void Game::CloseGame()
 {
-	//handle game asset deletion
-	cout << "Deleting Game Assets..." << endl;
-	delete GameStates;
+	if (GameStates != nullptr) {
+		//handle game asset deletion
+		cout << "Deleting Game Assets..." << endl;
+		delete GameStates;
+	}
 
-
-	//delete player input from memory
-	delete PlayerInput;
+	if (PlayerInput != nullptr) {
+		//delete player input from memory
+		delete PlayerInput;
+	}
 
 	//Handle SDL unintialisation
 	cout << "Cleaning up SDL" << endl;
-	SDL_DestroyWindow(SdlWindow);
+
+	if (SdlWindow != nullptr) {
+		SDL_DestroyWindow(SdlWindow);
+	}
+	if (SdlRenderer != nullptr) {
+		SDL_DestroyRenderer(SdlRenderer);
+	}
+
 	SDL_Quit();
 }
 
 void Game::BeginPlay()
 {
 	cout << "Load Game Assets..." << endl;
-	GameState* StartingState = new GameState(SdlWindow, SdlRenderer);
+	PlayState* StartingState = new PlayState(SdlWindow, SdlRenderer);
 	//create a game state machine and
 	GameStates = new GameStateMachine(StartingState);
 

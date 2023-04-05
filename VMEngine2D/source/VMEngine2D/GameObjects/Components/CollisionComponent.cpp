@@ -1,16 +1,17 @@
 #include "VMEngine2D/GameObjects/Components/CollisionComponent.h"
 #include "VMEngine2D/GameObject.h"
 #include "VMEngine2D/Game.h"
+#include "VMEngine2D/GameState.h"
 
 CollisionComponent::CollisionComponent(GameObject* OwnerObject) : Components(OwnerObject)
 {
-
+	AttatchedGameState = Game::GetGameInstance().GetGameStates()->GetCurrentState();
 }
 
 CollisionComponent::~CollisionComponent()
 {
 	//remove self from game when deleted
-	Game::GetGameInstance().RemoveCollsionFromGame(this);
+	AttatchedGameState->RemoveCollisionFromGameState(this);
 
 	for(CollisionComponent * OtherCol : OverlappedCollisions) {
 		if (OtherCol->GetOwner()->ShouldDestroy()) {
@@ -114,7 +115,7 @@ void CollisionComponent::RemoveCollisionFromOverlapped(CollisionComponent* Colli
 void CollisionComponent::OnActivated()
 {
 	//add itself into the game collsion aray
-	Game::GetGameInstance().AddCollisionTOGame(this);
+	AttatchedGameState->AddCollisionToGameState(this);
 
 	std::cout << "Colision activate" << std::endl;
 }

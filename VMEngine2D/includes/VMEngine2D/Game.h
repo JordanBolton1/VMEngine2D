@@ -33,14 +33,19 @@ public:
 	//sets bGameOver to true which closes the app
 	void CloseApp() { bIsGameOver = true; }
 	
-	//add a collsision component to the component stack
-	void AddCollisionTOGame(CollisionComponent* Collider);
 
-	//remove collsion from the game
-	void RemoveCollsionFromGame(CollisionComponent* Colldier);
 
 	//return all the colldiers iin thee game
 	std::vector<CollisionComponent*> GetGameCollider() const;
+
+	//return the gamesstate machine
+	GameStateMachine* GetGameStates() { return GameStates; }
+
+public:
+	//store current players score
+	unsigned int GameScore;
+
+
 private:
 	//Constructor
 	Game();

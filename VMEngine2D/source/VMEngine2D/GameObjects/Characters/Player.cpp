@@ -99,8 +99,8 @@ void Player::Update()
 			if (!Enemy->GetOwner()->ShouldDestroy()) {
 				std::cout << "KILLLLLL" << std::endl;
 				Enemy->GetOwner()->DestroyGameObject();
+				Game::GetGameInstance().GameScore += 100;
 			}
-			
 		}
 	}
 	else {

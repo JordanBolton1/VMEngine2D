@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+class GameState;
+
 struct STColDimensions {
 	float Width = 25.0f;
 	float Height = 25.0f;
@@ -42,5 +44,8 @@ public:
 	//store the colliders thate are being overlapped
 	std::vector<CollisionComponent*> OverlappedCollisions;
 
+private:
 
+	//this is the game state that the collision spawn into
+	GameState* AttatchedGameState;
 };

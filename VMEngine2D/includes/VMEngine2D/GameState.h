@@ -8,6 +8,7 @@ struct SDL_Window;
 class Input;
 class GameObject;
 class CollisionComponent;
+class Text;
 
 using namespace std;
 //at compile time the compiler will return the type definition into the proper one
@@ -21,11 +22,11 @@ public:
 	~GameState();
 
 	
-	void ProcessInput(Input* PlayerInput);
+	virtual void ProcessInput(Input* PlayerInput);
 
-	void Update(float DeltaTime);
+	virtual void Update(float DeltaTime);
 
-	void Draw(SDL_Renderer* Renderer);
+	virtual void Draw(SDL_Renderer* Renderer);
 
 	void HandleGarbage();
 
@@ -37,10 +38,10 @@ public:
 	vector<CollisionComponent*> GetGameStateCollisions() { return StateCollision; }
 
 	//run when state update for the first time
-	void BeginState();
+	virtual void BeginState();
 
 	//run when state u[pdate finishes
-	void EndState();
+	virtual void EndState();
 
 	
 protected:
@@ -48,6 +49,12 @@ protected:
 	SDL_Window* StateWindow;
 	//the renderer assigned to this tsate
 	SDL_Renderer* StateRenderer;
+protected:
+	//add gameobject to the state
+	void ActivateGameObject(GameObject* ObjectToAdd);
+
+	void ActivateTextObject(Text* TextToAdd);
+
 private:
 
 	//store all gameobject specifi to the state
@@ -55,6 +62,9 @@ private:
 
 	//all of thee collsision components specfic to the state
 	vector<CollisionComponent*> StateCollision;
+
+	//this will hold all of the text objects in the stack
+	vector<Text*> StateTextObjects;
 
 	//determine when the begin playe is activated
 	bool bHasActivated;

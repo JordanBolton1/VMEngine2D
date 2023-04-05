@@ -1,9 +1,7 @@
 #include "VMEngine2D/GameState.h"
 #include "VMEngine2D/GameObject.h"
 #include "SDL2/SDL.h"
-
-#include "VMEngine2D/GameObjects/Characters/Enemy.h"
-#include "VMEngine2D/GameObjects/Characters/Player.h"
+#include "VMEngine2D/Text.h"
 
 GameState::GameState(SDL_Window* Window, SDL_Renderer* Renderer)
 {
@@ -14,10 +12,18 @@ GameState::GameState(SDL_Window* Window, SDL_Renderer* Renderer)
 
 GameState::~GameState()
 {
+	for (Text* SingleText : StateTextObjects) {
+		delete SingleText;
+	}
+	StateTextObjects.clear();
 }
 
 void GameState::ProcessInput(Input* PlayerInput)
 {
+	if (!bHasActivated) {
+		return;
+	}
+
 	//process the input  of each gameobject
 	for (GameObject* SingleGameObject : StateGameObject) {
 		SingleGameObject->ProcessInput(PlayerInput);
@@ -36,42 +42,34 @@ void GameState::Update(float DeltaTime)
 		SingleGameObject->Update();
 	}
 
-	//set a static timer to count up based on deltatime
-	//static variables dont reinitialise
-	static double SpawnTimer = 0.0;
-	SpawnTimer += DeltaTime;
-
-	if (SpawnTimer > 5.0) {
-		//set up
-		int WinWidth, WinHeight = 0;
-
-		SDL_GetWindowSize(StateWindow, &WinWidth, &WinHeight);
-
-		WinWidth += 1;
-		WinWidth -= 128;
-
-		int SpawnEnemyX = rand() % WinWidth;
-
-		Enemy* NewEnemy = new Enemy(Vector2(SpawnEnemyX, -128.0f), StateRenderer);
-
-		StateGameObject.push_back(NewEnemy);
-
-		SpawnTimer = 0.0;
-	}
+	
 }
 
 void GameState::Draw(SDL_Renderer* Renderer)
 {
+	if (!bHasActivated) {
+		return;
+	}
+	
 	//cycle through all of the gameObjects in the ALLGameObjects array
 	//each loop reassign the singleGameobject
 	for (GameObject* SingleGameObject : StateGameObject) {
 		//each loop run the draw function for each gameobject
 		SingleGameObject->Draw(Renderer);
 	}
+	//
+	//
+	for (Text* SingleText : StateTextObjects) {
+		SingleText->Draw(Renderer);
+	}
 }
 
 void GameState::HandleGarbage()
 {
+	if (!bHasActivated) {
+		return;
+	}
+
 	//loop thru all of the gameoobject and assign the iterator each loop
 	for (GOIterator Object = StateGameObject.begin(); Object != StateGameObject.end();) {
 		//if the object is not marked for delte then increment and skip to the next one
@@ -115,9 +113,7 @@ void GameState::RemoveCollisionFromGameState(CollisionComponent* Collision)
 
 void GameState::BeginState()
 {
-	Player* MyCharacter = new Player(Vector2(100.0f, 100.0f), StateRenderer);
-	// ad the characetr into the gaameobject stack
-	StateGameObject.push_back(MyCharacter);
+
 }
 
 void GameState::EndState()
@@ -127,9 +123,23 @@ void GameState::EndState()
 		SingleGameObject->DestroyGameObject();
 	}
 
+
 	//run the handle garbage to delete
 	HandleGarbage();
 }
+
+void GameState::ActivateGameObject(GameObject* ObjectToAdd)
+{
+	StateGameObject.push_back(ObjectToAdd);
+
+}
+
+void GameState::ActivateTextObject(Text* TextToAdd)
+{
+	StateTextObjects.push_back(TextToAdd);
+}
+
+//////////////////////////GAMESTATE MACHINE //////////////////////////////////////
 
 GameStateMachine::GameStateMachine(GameState* StartingState)
 {
