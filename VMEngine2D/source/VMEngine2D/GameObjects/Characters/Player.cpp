@@ -7,8 +7,7 @@
 #include "VMEngine2D/GameObjects/Projectile.h"
 #include "VMEngine2D/GameState.h"
 
-Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer)
-	:Character(StartPosition)
+Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer) :Character(StartPosition)
 {
 	BoostersIndex = PlayerAnims :: BOOSTERS_IDLE;
 	Scale = 3.0f;
@@ -19,16 +18,11 @@ Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer)
 	STAnimationData AnimData1 = STAnimationData();
 	AnimData1.FPS = 0;
 
-
 	//add ship texture into animState - 0
-	AddAnimation(Renderer,
-		"Content/MainShip/Base/Base - Full health.png",
-		AnimData1);
+	AddAnimation(Renderer,"Content/MainShip/Base/Base - Full health.png", AnimData1);
 
 	//add engine to ship into animState - 1
-	AddAnimation(Renderer,
-		"Content/MainShip/Engine/Base Engine.png",
-		AnimData1);
+	AddAnimation(Renderer, "Content/MainShip/Engine/Base Engine.png", AnimData1);
 
 	//update animData to handle animations
 	AnimData1.FPS = 24;
@@ -121,8 +115,24 @@ void Player::Update()
 	else {
 		bOverlapDetected = false;
 	}
-}
 
+	if (Collision->IsOverlappingTag("Collectable")) {
+		bOverlapDetected = true;
+		//getting all overlapped collectables and destroy them
+		for (CollisionComponent* Collectable : Collision->GetOverLappedByTag("Collectable")) {
+			//if collectable is not being destroyed
+			if (!Collectable->GetOwner()->ShouldDestroy()) {
+				std::cout << "Good Job!" << std::endl;
+				//destroy enemy
+				dynamic_cast<Character*>(Collectable->GetOwner())->RemoveLives(1);
+			}
+		}
+	}
+
+	else {
+		bOverlapDetected = false;
+	}
+}
 
 
 void Player::Draw(SDL_Renderer* Renderer)

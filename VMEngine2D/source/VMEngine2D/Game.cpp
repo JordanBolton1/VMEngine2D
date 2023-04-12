@@ -165,9 +165,13 @@ void Game::Run()
 	//If not false run game loop
 	while (!bIsGameOver) {
 		Instantiate();
+
 		ProcessInput();
+
 		Update();
+
 		Draw();
+
 		HandleGarbage();
 	}
 
