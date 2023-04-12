@@ -52,6 +52,9 @@ private:
 	//Destructor
 	~Game();
 
+	//add things into the game
+	void Instantiate();
+
 	//Handle the input of the user
 	void ProcessInput();
 

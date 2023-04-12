@@ -4,6 +4,8 @@
 #include"VMEngine2D/Game.h"
 #include "VMEngine2D/GameObjects/Components/PhysicsComponent.h"
 #include "VMEngine2D/GameObjects/Components/CollisionComponent.h"
+#include "VMEngine2D/GameObjects/Projectile.h"
+#include "VMEngine2D/GameState.h"
 
 Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer)
 	:Character(StartPosition)
@@ -12,7 +14,8 @@ Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer)
 	Scale = 3.0f;
 	Physics->MaxVelocity = 300.0f;
 	Physics->Drag = 5.0f;
-	
+	Lives = 5;
+
 	STAnimationData AnimData1 = STAnimationData();
 	AnimData1.FPS = 0;
 
@@ -42,9 +45,6 @@ Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer)
 	AddAnimation(Renderer, "Content/MainShip/Engine Effects/Base Engine - Powering.png",AnimData1);
 }
 
-Player::~Player()
-{
-}
 
 void Player::ProcessInput(Input* PlayerInput)
 {
@@ -67,20 +67,33 @@ void Player::ProcessInput(Input* PlayerInput)
 	if (PlayerInput->IsKeyDown(SDL_SCANCODE_A)) {
 		//set input x to left
 		MovementDir.x = -1.0;
-
-		Rotation = -90.0;
 	}
 	if (PlayerInput->IsKeyDown(SDL_SCANCODE_D)) {
 		//set input x to right
 		MovementDir.x = 1.0;
-
-		Rotation = 90.0;
 	}
 		
 	if (MovementDir.Length() > 0.0f) {
 		BoostersIndex = PlayerAnims::BOOSTERS_POWERING;
 	}
 
+	static float FireTimer = 0.05f;
+	FireTimer += Game::GetGameInstance().GetFDeltaTime();
+
+	if (PlayerInput->IsKeyDown(SDL_SCANCODE_R) && FireTimer >= 0.25f) {
+		Projectile* P = new Projectile();
+
+		P->Position = Position;
+		P->Position.x += 64.0f;
+		P->Position.y += 64.0f;
+		P->Acceleration = 1000.0f;
+		P->Direction = Vector2(0.0f, -1.0f);
+		P->TargetTag = "Enemy";
+
+		Game::GetGameInstance().GetGameStates()->GetCurrentState()->SpawnGameObject(P);
+
+		FireTimer = 0.0f;
+	}
 }
 
 void Player::Update()
@@ -98,8 +111,10 @@ void Player::Update()
 			//if enemy is not being destroyed
 			if (!Enemy->GetOwner()->ShouldDestroy()) {
 				std::cout << "KILLLLLL" << std::endl;
-				Enemy->GetOwner()->DestroyGameObject();
-				Game::GetGameInstance().GameScore += 100;
+				//destroy enemy
+				dynamic_cast<Character*>(Enemy->GetOwner())->RemoveLives(1);
+				//remove life from player
+				RemoveLives(1);
 			}
 		}
 	}

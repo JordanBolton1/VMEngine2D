@@ -10,13 +10,11 @@ enum PlayerAnims : unsigned int {
 
 };
 
-class Player :
-	public Character {
+class Player : public Character {
 
 public :
 
 	Player(Vector2 StartPosition, SDL_Renderer* Renderer);
-	virtual ~Player();
 
 	virtual void ProcessInput(Input* PlayerInput) override;
 
@@ -29,5 +27,6 @@ protected:
 
 	//play booster animation
 	unsigned int BoostersIndex;
+
 };
 

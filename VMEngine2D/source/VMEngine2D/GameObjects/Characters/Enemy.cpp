@@ -27,13 +27,22 @@ Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPo
 
 void Enemy::Update()
 {
+	//call to parent function
 	Character::Update();
 
+	//more velocity down
 	Physics->AddForce(MovementDir, 300.0f);
 
 	//teleport tthe enemy back up if the reach the bottom of screen
 	if (Position.y > 540.0f) {
 		Position.y = -64.0f * Scale;
+	}
+	//if lives are 0 
+	if (GetLives() == 0) {
+		//add points to game
+		Game::GetGameInstance().GameScore += 100;
+		//destroy self
+		this->DestroyGameObject();
 	}
 }
 

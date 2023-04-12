@@ -2,6 +2,7 @@
 #include "VMEngine2D/GameState.h"
 
 class Text;
+class Player;
 
 class PlayState : public GameState {
 public:
@@ -20,6 +21,7 @@ public:
 protected:
 
 	Text* ScoreText;
+	Text* LivesText;
 
 	//spawn enemy timer
 	double SpawnTimer;
@@ -27,4 +29,6 @@ protected:
 	//time to spaw enemies 
 	double SpawnTime;
 
+	//this will stre the player
+	Player* PlayerCharacter;
 };

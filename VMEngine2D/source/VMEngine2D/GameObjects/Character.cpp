@@ -23,6 +23,9 @@ Character::Character(Vector2 StartPosition)
 	Collision->Dimensions.Width = 120.0f;
 	Collision->Dimensions.Height = 120.0f;
 
+	//make sure nothing is deadf on spawn
+	Lives = 1;
+
 	std::cout << "Char created" << std::endl;
 }
 
@@ -75,4 +78,25 @@ void Character::AddAnimation(SDL_Renderer* Renderer, const char* SpriteSheetPath
 	//add an aniomtion to the animStateMachine using the AnimStateMachine function
 	CharacterAnimations->AddAnimation(Renderer, SpriteSheetPath, AnimationData);
 
+}
+
+void Character::AddLives(int Amount)
+{
+	//clamping amount at a minimum of 0
+	Amount = std::max(0, Amount);
+	//adding the amount to our currentr lives
+	Lives += Amount;
+
+}
+
+void Character::RemoveLives(int Amount)
+{
+	//creating a temp lives variable that can be negative
+	int NewLives = Lives - Amount;
+
+	//clamping the value to 0 if the number is negative
+	NewLives = std::max(0, NewLives);
+
+	//set the lives to the newe value
+	Lives = NewLives;
 }

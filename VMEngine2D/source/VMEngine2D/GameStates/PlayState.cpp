@@ -10,30 +10,64 @@ PlayState::PlayState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Win
 	ScoreText = nullptr;
 	SpawnTimer = 0.0;
 	SpawnTime = 5.0;
+	PlayerCharacter = nullptr;
+	LivesText = nullptr;
+
 }
 
 void PlayState::BeginState()
 {
 	GameState::BeginState();
 
-	Player* MyCharacter = new Player(Vector2(100.0f, 100.0f), StateRenderer);
+	PlayerCharacter = new Player(Vector2(100.0f, 100.0f), StateRenderer);
 	// ad the characetr into the gaameobject stack
-	ActivateGameObject(MyCharacter);
+	SpawnGameObject(PlayerCharacter);
 
 	//create aan empty text object
 	ScoreText = new Text(StateRenderer);
 	
 	//ajust text settings
-	STTextInfo TestInfo;
-	TestInfo.TextStr = "Hello World";
-	TestInfo.Size = 40;
-	TestInfo.Position = Vector2(50.0f, 50.0f);
+	STTextInfo ScoreInfo;
+	ScoreInfo.TextStr = "Hello World";
+	ScoreInfo.Size = 30;
+	ScoreInfo.Position = Vector2(50.0f, 30.0f);
 
 	//initialise the text 
-	ScoreText->InitText("Content/Fonts/dogica.ttf", TestInfo);
+	ScoreText->InitText("Content/Fonts/dogica.ttf", ScoreInfo);
 
 	//add text to the game
 	ActivateTextObject(ScoreText);
+
+	//creat new text elelment
+	LivesText = new Text(StateRenderer);
+
+	//initialise a width and height int
+	int w, h = 0;
+
+	//get the window size and set the width and height
+	SDL_GetWindowSize(StateWindow, &w, &h);
+
+	//adjust the starting setting
+	STTextInfo LivesInfo;
+	LivesInfo.TextStr = "Lives: ##";
+	LivesInfo.Size = 30;
+	//set the y pos of the text using the height of the windowe
+	LivesInfo.Position = Vector2(25.0f, static_cast<float>(h));
+
+	//create text using the setting and font
+	LivesText->InitText("Content/Fonts/dogica.ttf", LivesInfo);
+
+	//create a new position for the text accounting for the height of the text then offsetting
+	Vector2 NewTextPos;
+	NewTextPos.x = LivesText->GetTextInfo().Position.x;
+	NewTextPos.y = LivesText->GetTextInfo().Position.y- LivesText->GetTextInfo().Dimensions.y - 20.0f;
+
+	//update position
+	LivesText->SetTextPostion(NewTextPos);
+
+	//addlives teexct to the gamestate
+	ActivateTextObject(LivesText);
+
 }
 
 void PlayState::ProcessInput(Input* PlayerInput)
@@ -67,9 +101,9 @@ void PlayState::Update(float DeltaTime)
 		Enemy* NewEnemy = new Enemy(Vector2(SpawnEnemyX, -128.0f), StateRenderer);
 
 		//add the enemy to the game object stack
-		ActivateGameObject(NewEnemy);
+		SpawnGameObject(NewEnemy);
 
-		//reset timer to 0 and start again
+		//reset timer to 0 and start again 
 		SpawnTimer = 0.0;
 		SpawnTime *= 0.99;
 
@@ -80,9 +114,12 @@ void PlayState::Update(float DeltaTime)
 	}
 	ScoreText->SetText("Score: " + to_string(Game::GetGameInstance().GameScore));
 
-	//after score is obtained switch to game over
-	if (Game::GetGameInstance().GameScore > 200) {
-		PlayState* NewState = new PlayState(StateWindow, StateRenderer);
+	//update lives text
+	LivesText->SetText("Lives: " + to_string(PlayerCharacter->GetLives() - 1));
+
+	//after score is obtained o player is defeated switch to game over
+	if (Game::GetGameInstance().GameScore >= 600 || PlayerCharacter->GetLives() == 0) {
+		GameOverState* NewState = new GameOverState(StateWindow, StateRenderer);
 
 		Game::GetGameInstance().GetGameStates()->SwitchState(NewState);
 	}

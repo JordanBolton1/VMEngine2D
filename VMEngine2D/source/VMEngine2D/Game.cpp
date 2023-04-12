@@ -47,6 +47,11 @@ Game::~Game()
 	cout << "Destroyed Game Instance..." << endl;
 }
 
+void Game::Instantiate() {
+	//run the game staes in instantiate
+	GetGameStates()->GetCurrentState()->Instantiate();
+}
+
 void Game::Start(const char* WTitle, bool bFullScreen, int WWidth, int WHeight)
 {
 	// Intialise SDL and end the game if it fails
@@ -159,6 +164,7 @@ void Game::Run()
 	//check if the game over is false (something has thrown an error)
 	//If not false run game loop
 	while (!bIsGameOver) {
+		Instantiate();
 		ProcessInput();
 		Update();
 		Draw();

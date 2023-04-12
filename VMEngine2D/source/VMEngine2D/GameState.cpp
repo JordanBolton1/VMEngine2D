@@ -16,6 +16,12 @@ GameState::~GameState()
 		delete SingleText;
 	}
 	StateTextObjects.clear();
+
+	for (GameObject* SingleObject : ObjectsToSpawn) {
+		delete SingleObject;
+	}
+
+	ObjectsToSpawn.clear();
 }
 
 void GameState::ProcessInput(Input* PlayerInput)
@@ -62,6 +68,14 @@ void GameState::Draw(SDL_Renderer* Renderer)
 	for (Text* SingleText : StateTextObjects) {
 		SingleText->Draw(Renderer);
 	}
+}
+
+void GameState::Instantiate()
+{
+	//insert is inserting he whole objects to spawn list into the state game objects at the beginning of the array
+	StateGameObject.insert(StateGameObject.begin(), ObjectsToSpawn.begin(), ObjectsToSpawn.end());
+	//remove the objects from the bjects to spawnlist
+	ObjectsToSpawn.clear();
 }
 
 void GameState::HandleGarbage()
@@ -128,6 +142,11 @@ void GameState::EndState()
 	HandleGarbage();
 }
 
+void GameState::SpawnGameObject(GameObject* Object)
+{
+	ObjectsToSpawn.push_back(Object);
+}
+
 void GameState::ActivateGameObject(GameObject* ObjectToAdd)
 {
 	StateGameObject.push_back(ObjectToAdd);
@@ -174,7 +193,7 @@ void GameStateMachine::PushState(GameState* NewState)
 
 void GameStateMachine::PopState()
 {
-	if (GameStateStack.size() > 1) {
+	if (GameStateStack.size() > 0) {
 		//cache the old state so we can delet it after it is removed
 		GameState* OldState = GetCurrentState();
 		//remove it from stack

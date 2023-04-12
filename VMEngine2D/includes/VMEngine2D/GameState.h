@@ -28,6 +28,8 @@ public:
 
 	virtual void Draw(SDL_Renderer* Renderer);
 
+	void Instantiate();
+
 	void HandleGarbage();
 
 	//add a collsision componentt into the game state collisions stack
@@ -43,8 +45,22 @@ public:
 	//run when state u[pdate finishes
 	virtual void EndState();
 
+	//return the state renderr
+	SDL_Renderer* GetRenderer()const { return StateRenderer; }
+
+	//return the state window
+	SDL_Window* GetWindow()const { return StateWindow; }
+
+	//add object into game stack
+	void SpawnGameObject(GameObject* Object);
+
+
+
 	
 protected:
+
+	vector<GameObject*> ObjectsToSpawn;
+
 	//window assigned to this state
 	SDL_Window* StateWindow;
 	//the renderer assigned to this tsate
@@ -58,7 +74,7 @@ protected:
 private:
 
 	//store all gameobject specifi to the state
-	vector<GameObject*>StateGameObject;
+	vector<GameObject*> StateGameObject;
 
 	//all of thee collsision components specfic to the state
 	vector<CollisionComponent*> StateCollision;

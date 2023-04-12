@@ -69,6 +69,12 @@
     <ClCompile Include="source\VMEngine2D\GameStates\GameOver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Collectable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VMEngine2D\GameObjects\Projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\VMEngine2D\Game.h">
@@ -120,6 +126,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="includes\VMEngine2D\GameStates\GameOver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Collectable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\VMEngine2D\GameObjects\Projectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
