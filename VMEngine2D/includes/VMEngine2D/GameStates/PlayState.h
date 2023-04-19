@@ -29,6 +29,12 @@ protected:
 	//time to spaw enemies 
 	double SpawnTime;
 
+	double ColSpawnTimer;
+
+	double ColSpawnTime;
+
 	//this will stre the player
 	Player* PlayerCharacter;
+
+
 };

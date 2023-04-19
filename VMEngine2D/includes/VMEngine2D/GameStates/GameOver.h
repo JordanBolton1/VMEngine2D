@@ -18,6 +18,7 @@ public:
 	void EndState()override;
 
 protected:
+	Text* GameOverText;
 
 	Text* ScoreText;
 

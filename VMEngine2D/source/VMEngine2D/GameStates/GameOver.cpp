@@ -7,6 +7,7 @@
 
 GameOverState::GameOverState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Window, Renderer)
 {
+	GameOverText = nullptr;
 	ScoreText = nullptr;
 	RestartText = nullptr;
 }
@@ -15,19 +16,35 @@ void GameOverState::BeginState()
 {
 	GameState::BeginState();
 
-	ScoreText = new Text(StateRenderer);
+	//////GAME OVER TEXT//////
+	GameOverText = new Text(StateRenderer);
+
 	STTextInfo TextSettings;
-	TextSettings.Size = 60;
-	TextSettings.Position = Vector2(440.0f, 270.0f);
-	TextSettings.TextStr = to_string(Game::GetGameInstance().GameScore);
+	TextSettings.Size = 100;
+	TextSettings.Position = Vector2(40.0f, 25.0f);
+	TextSettings.TextStr = "GAME OVER";
+
+	GameOverText->InitText("Content/Fonts/dogica.ttf", TextSettings);
+	ActivateTextObject(GameOverText);
+
+
+	///////SCORE TEXT//////
+	ScoreText = new Text(StateRenderer);
+
+	TextSettings.Size = 40;
+	TextSettings.Position = Vector2(290.0f, 150.0f);
+	TextSettings.TextStr = "SCORE: " + to_string(Game::GetGameInstance().GameScore);
 
 	ScoreText->InitText("Content/Fonts/dogica.ttf",TextSettings );
 
 	ActivateTextObject(ScoreText);
 
+
+	//////RESTART TEXT//////
 	RestartText = new Text(StateRenderer);
+
 	TextSettings.Size = 24;
-	TextSettings.Position = Vector2(25.0f, 150.0f);
+	TextSettings.Position = Vector2(240.0f, 250.0f);
 	TextSettings.TextStr = "Press Space To Restart";
 
 	RestartText->InitText("Content/Fonts/dogica.ttf", TextSettings);
@@ -61,6 +78,7 @@ void GameOverState::EndState()
 {
 	GameState::EndState();
 
+	GameOverText = nullptr;
 	ScoreText = nullptr;
 	RestartText = nullptr;
 }

@@ -4,6 +4,7 @@
 #include "VMEngine2D/Text.h"
 #include "VMEngine2D/Game.h"
 #include "VMEngine2D/GameStates/GameOver.h"
+#include "VMEngine2D/GameObjects/Characters/Collectable.h"
 
 PlayState::PlayState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Window, Renderer)
 {
@@ -12,6 +13,8 @@ PlayState::PlayState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Win
 	SpawnTime = 5.0;
 	PlayerCharacter = nullptr;
 	LivesText = nullptr;
+	ColSpawnTime = 20.0;
+	ColSpawnTimer = 0.0;
 
 }
 
@@ -29,8 +32,8 @@ void PlayState::BeginState()
 	//ajust text settings
 	STTextInfo ScoreInfo;
 	ScoreInfo.TextStr = "Hello World";
-	ScoreInfo.Size = 30;
-	ScoreInfo.Position = Vector2(50.0f, 30.0f);
+	ScoreInfo.Size = 20;
+	ScoreInfo.Position = Vector2(20.0f, 20.0f);
 
 	//initialise the text 
 	ScoreText->InitText("Content/Fonts/dogica.ttf", ScoreInfo);
@@ -50,7 +53,7 @@ void PlayState::BeginState()
 	//adjust the starting setting
 	STTextInfo LivesInfo;
 	LivesInfo.TextStr = "Lives: ##";
-	LivesInfo.Size = 30;
+	LivesInfo.Size = 20;
 	//set the y pos of the text using the height of the windowe
 	LivesInfo.Position = Vector2(25.0f, static_cast<float>(h));
 
@@ -82,6 +85,7 @@ void PlayState::Update(float DeltaTime)
 	//static variables dont reinitialise
 
 	SpawnTimer += DeltaTime;
+	ColSpawnTimer += DeltaTime;
 
 	if (SpawnTimer > SpawnTime) {
 		//set up variable3s to  recieve the app window width and height
@@ -112,13 +116,42 @@ void PlayState::Update(float DeltaTime)
 			SpawnTime = 1.0;
 		}
 	}
+	if (ColSpawnTimer > ColSpawnTime) {
+		//set up variable3s to  recieve the app window width and height
+		int WinWidth, WinHeight = 0;
+		//use sdl function to set the dimnsions
+		SDL_GetWindowSize(StateWindow, &WinWidth, &WinHeight);
+
+		//increase window wdth by 1
+		WinWidth += 1;
+		WinWidth -= 128;
+
+		//get a random number between 0 and window width
+		//rand() gets random number between 0 and numbr after %
+		int SpawnColX = rand() % WinWidth;
+
+		//spawn an enemy based on a randomsreen x location
+		Collectables* NewCol = new Collectables(Vector2(SpawnColX, 50.0f), StateRenderer);
+
+		//add the enemy to the game object stack
+		SpawnGameObject(NewCol);
+
+		//reset timer to 0 and start again 
+		ColSpawnTimer = 0.0;
+		ColSpawnTime *= 0.99;
+
+		//wont let spawn timer spawn faster tthan 1 second
+		if (ColSpawnTime < 2.0) {
+			ColSpawnTime = 2.0;
+		}
+	}
 	ScoreText->SetText("Score: " + to_string(Game::GetGameInstance().GameScore));
 
 	//update lives text
 	LivesText->SetText("Lives: " + to_string(PlayerCharacter->GetLives() - 1));
 
 	//after score is obtained o player is defeated switch to game over
-	if (Game::GetGameInstance().GameScore >= 600 || PlayerCharacter->GetLives() == 0) {
+	if (Game::GetGameInstance().GameScore >= 50 || PlayerCharacter->GetLives() == 0) {
 		GameOverState* NewState = new GameOverState(StateWindow, StateRenderer);
 
 		Game::GetGameInstance().GetGameStates()->SwitchState(NewState);

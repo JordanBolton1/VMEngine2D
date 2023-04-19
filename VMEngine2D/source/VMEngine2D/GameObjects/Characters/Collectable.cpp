@@ -6,7 +6,7 @@
 
 Collectables::Collectables(Vector2 StartPosition, SDL_Renderer* Renderer) : Character(StartPosition)
 {
-	Scale = 5.0f;
+	Scale = 1.0f;
 	Tag = "Collectable";
 
 	STAnimationData AnimData = STAnimationData();
