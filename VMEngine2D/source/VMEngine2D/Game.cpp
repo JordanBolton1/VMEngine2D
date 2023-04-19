@@ -4,6 +4,7 @@
 #include "VMEngine2D/GameObject.h"
 #include "VMEngine2D/GameState.h"
 #include "VMEngine2D/GameStates/PlayState.h"
+#include "VMEngine2D/WindowMenu.h"
 
 #include "SDL2/SDL_ttf.h"
 
@@ -40,6 +41,17 @@ Game::Game()
 	PlayerInput = nullptr;
 	GameStates = nullptr;
 	GameScore = 0;
+	TopMenu = nullptr;
+}
+
+void Game::RestartGame()
+{
+	//rewset game score
+	GameScore = 0;
+
+	//create a newe starting state
+	PlayState* NewState = new PlayState(SdlWindow, SdlRenderer);
+	GetGameStates()->SwitchState(NewState);
 }
 
 Game::~Game()
@@ -102,6 +114,11 @@ void Game::Start(const char* WTitle, bool bFullScreen, int WWidth, int WHeight)
 		CloseGame();
 		return;
 	}
+
+	//create a menu for the window
+	TopMenu = new WindowMenu(SdlWindow);
+	//add the menu to the window
+	TopMenu->CreateMenuFromResource();
 
 	//create the input in the inisialisation stage
 	PlayerInput = new Input();

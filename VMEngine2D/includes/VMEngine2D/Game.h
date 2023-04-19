@@ -7,7 +7,7 @@ class GameObject;
 class Input;
 class CollisionComponent;
 class GameStateMachine;
-
+class WindowMenu;
 
 
 class Game {
@@ -40,6 +40,12 @@ public:
 
 	//return the gamesstate machine
 	GameStateMachine* GetGameStates() { return GameStates; }
+
+	//get the top level windows system menu
+	WindowMenu* GetTopMenu() const { return TopMenu; }
+
+	//this will restart game
+	void RestartGame();
 
 public:
 	//store current players score
@@ -92,7 +98,10 @@ private:
 
 	Input* PlayerInput;
 
-	//store the c
+	//store the current gamestate
 	GameStateMachine* GameStates;
+
+	//
+	WindowMenu* TopMenu;
 
 };

@@ -74,7 +74,7 @@ void Player::ProcessInput(Input* PlayerInput)
 	static float FireTimer = 0.05f;
 	FireTimer += Game::GetGameInstance().GetFDeltaTime();
 
-	if (PlayerInput->IsKeyDown(SDL_SCANCODE_R) && FireTimer >= 0.25f) {
+	if (PlayerInput->IsKeyDown(SDL_SCANCODE_SPACE) && FireTimer >= 0.25f) {
 		Projectile* P = new Projectile();
 
 		P->Position = Position;

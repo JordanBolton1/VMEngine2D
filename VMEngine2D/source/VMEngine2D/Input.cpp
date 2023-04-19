@@ -1,6 +1,10 @@
 #include "VMEngine2D/Input.h"
 #include "VMEngine2D/Game.h"
+#include "VMEngine2D/WindowMenu.h"
+#include "SDL2/SDL_syswm.h"
 #include<iostream>
+#include"../resource.h"
+
 
 Input::Input()
 {
@@ -35,6 +39,9 @@ void Input::ProcessInput()
 			//go into the game instance and run the Close
 			Game::GetGameInstance().CloseApp();
 			break;
+		case SDL_SYSWMEVENT:
+			HandleWMEvents(&PollEvent);
+			break;
 		default:
 			break;
 		}
@@ -50,4 +57,31 @@ bool Input::IsKeyDown(SDL_Scancode Key)
 
 // return the value of the key = true or false
 	return KeyboardState[Key];
+}
+
+void Input::HandleWMEvents(SDL_Event* Event)
+{
+	//listen out for system windowmenu button presses
+	switch (Event->syswm.msg->msg.win.wParam) {
+	case ID_FILE_RESTARTGAME :
+		Game::GetGameInstance().RestartGame();
+		break;
+	case ID_FILE_EXITAPP :
+		Game::GetGameInstance().CloseApp();
+		break;
+	case ID_GAME_CONTROLS:
+		Game::GetGameInstance().GetTopMenu()->ActivatePopup(
+			"Game Controls",	//title
+			"WASD - Move Player \n Space - Shoot \n Q - Activate Shield"	//message
+		);
+		break;
+	case ID_HELP_ABOUTVMENIGINE2D:
+		Game::GetGameInstance().GetTopMenu()->ActivatePopup(
+			"About",//title
+			"MMM yes"//message
+		);
+		break;
+	default:
+		break;
+	}
 }

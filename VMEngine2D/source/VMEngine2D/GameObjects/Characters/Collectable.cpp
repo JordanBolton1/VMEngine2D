@@ -14,6 +14,8 @@ Collectables::Collectables(Vector2 StartPosition, SDL_Renderer* Renderer) : Char
 
 	//Add the collectible to the animstate
 	AddAnimation(Renderer,"Content/Collectables/Ruby.png",AnimData);
+	std::cout << "collectable added" << std::endl;
+	
 
 }
 
