@@ -5,6 +5,8 @@
 #include "VMEngine2D/Game.h"
 #include "VMEngine2D/GameStates/GameOver.h"
 #include "VMEngine2D/GameObjects/Characters/Collectable.h"
+#include "VMEngine2D/AnimStateMachine.h"
+
 
 PlayState::PlayState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Window, Renderer)
 {
@@ -16,13 +18,36 @@ PlayState::PlayState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Win
 	ColSpawnTime = 20.0;
 	ColSpawnTimer = 0.0;
 
+	BGAnims = new AnimStateMachine();
+
+	STAnimationData  AnimData;
+	AnimData.FPS = 24;
+	AnimData.MaxFrames = 9;
+	AnimData.EndFrame = 8;
+
+	BGAnims->AddAnimation(Renderer, "Content/Background/BGStars.png", AnimData);
+	BGAnims->AddAnimation(Renderer, "Content/Background/BGStars2.png", AnimData);
+	BGAnims->AddAnimation(Renderer, "Content/Background/BGVoid.png", AnimData);
+
+	BGM= Mix_LoadMUS("Content/Audio/BG_Music/Game.wav");
 }
 
 void PlayState::BeginState()
 {
 	GameState::BeginState();
 
-	PlayerCharacter = new Player(Vector2(100.0f, 100.0f), StateRenderer);
+	//set volumes for all music played from mixer
+	Mix_VolumeMusic(25);
+
+	//play music file
+	//@param 1 - audio chunk
+	//@PARAM 2 - 
+	if (Mix_PlayMusic(BGM, -1) == -1) {
+		std::cout << "couldnt play BGM" << std::endl;
+	}
+
+
+	PlayerCharacter = new Player(Vector2(470.0f, 400.0f), StateRenderer);
 	// ad the characetr into the gaameobject stack
 	SpawnGameObject(PlayerCharacter);
 
@@ -160,6 +185,10 @@ void PlayState::Update(float DeltaTime)
 
 void PlayState::Draw(SDL_Renderer* Renderer)
 {
+	BGAnims->Draw(Renderer, 0, Vector2::Zero(), 0.0, 1.6f, false);
+	BGAnims->Draw(Renderer, 1, Vector2::Zero(), 0.0, 1.6f, false);
+	BGAnims->Draw(Renderer, 2, Vector2::Zero(), 0.0, 1.6f, false);
+
 	GameState::Draw(Renderer);
 }
 
@@ -168,4 +197,12 @@ void PlayState::EndState()
 	GameState::EndState();
 
 	ScoreText = nullptr;
+
+	//if bgm was assigned then 
+	if (BGM != nullptr) {
+		Mix_HaltMusic();
+		Mix_FreeMusic(BGM);
+	}
+
+
 }

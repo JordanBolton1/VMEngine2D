@@ -1,5 +1,6 @@
 #pragma once
 #include "VMEngine2D/GameState.h"
+#include "SDL2/SDL_mixer.h"
 
 class Text;
 
@@ -23,4 +24,7 @@ protected:
 	Text* ScoreText;
 
 	Text* RestartText;
+
+	// store background music 
+	Mix_Music* BGM;
 };

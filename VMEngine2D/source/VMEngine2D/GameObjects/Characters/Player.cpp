@@ -7,13 +7,21 @@
 #include "VMEngine2D/GameObjects/Projectile.h"
 #include "VMEngine2D/GameState.h"
 
+#include "SDL2/SDL_mixer.h"
+
 Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer) :Character(StartPosition)
 {
 	BoostersIndex = PlayerAnims :: BOOSTERS_IDLE;
-	Scale = 3.0f;
+	Scale = 1.5f;
 	Physics->MaxVelocity = 300.0f;
 	Physics->Drag = 5.0f;
+	ShootSFXIndex = 0;
 	Lives = 5;
+
+	Collision->Dimensions.Height = 42.0f;
+	Collision->Dimensions.Width = 42.0f;
+
+	Collision->Dimensions.Offset = Vector2(15.0f,15.0f);
 
 	STAnimationData AnimData1 = STAnimationData();
 	AnimData1.FPS = 0;
@@ -37,6 +45,30 @@ Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer) :Character(StartPo
 
 	//update animData to handle engine powered
 	AddAnimation(Renderer, "Content/MainShip/Engine Effects/Base Engine - Powering.png",AnimData1);
+
+	if (sfx_Shoot[0] == NULL) {
+		std::cout << "couldnt load audio" << std::endl;
+	}
+	if (sfx_Shoot[1] == NULL) {
+		std::cout << "couldnt load audio" << std::endl;
+	}
+	sfx_Shoot[0] = Mix_LoadWAV("Content/Audio/SFX/Shoot_1.wav");
+	sfx_Shoot[1] = Mix_LoadWAV("Content/Audio/SFX/Shoot_2.wav");
+
+	//sets the volume for each chunk
+	Mix_VolumeChunk(sfx_Shoot[0], 25);
+}
+
+Player::~Player()
+{
+	//remve audio file
+	if (sfx_Shoot[0] != nullptr) {
+		Mix_FreeChunk(sfx_Shoot[0]);
+	}
+	if (sfx_Shoot[1] != nullptr) {
+		Mix_FreeChunk(sfx_Shoot[1]);
+	}
+	
 }
 
 
@@ -74,12 +106,23 @@ void Player::ProcessInput(Input* PlayerInput)
 	static float FireTimer = 0.05f;
 	FireTimer += Game::GetGameInstance().GetFDeltaTime();
 
-	if (PlayerInput->IsKeyDown(SDL_SCANCODE_SPACE) && FireTimer >= 0.25f) {
+	if (PlayerInput->IsKeyDown(SDL_SCANCODE_SPACE) && FireTimer >= 0.1f) {
 		Projectile* P = new Projectile();
 
 		P->Position = Position;
-		P->Position.x += 64.0f;
-		P->Position.y += 64.0f;
+		P->Position.x += 15.0f;
+		P->Position.y += 10.0f;
+		P->Acceleration = 1000.0f;
+		P->Direction = Vector2(0.0f, -1.0f);
+		P->TargetTag = "Enemy";
+
+		Game::GetGameInstance().GetGameStates()->GetCurrentState()->SpawnGameObject(P);
+
+		P = new Projectile();
+
+		P->Position = Position;
+		P->Position.x += 45.0f;
+		P->Position.y += 10.0f;
 		P->Acceleration = 1000.0f;
 		P->Direction = Vector2(0.0f, -1.0f);
 		P->TargetTag = "Enemy";
@@ -87,6 +130,22 @@ void Player::ProcessInput(Input* PlayerInput)
 		Game::GetGameInstance().GetGameStates()->GetCurrentState()->SpawnGameObject(P);
 
 		FireTimer = 0.0f;
+
+		//plays a single sfx
+		//@param 1 - channel, if this is -1 it will play in the next available channel
+		//@param 2 - the sfx(mixChunk*)
+		//@param 3 0
+		if (Mix_PlayChannel(-1, sfx_Shoot[ShootSFXIndex], 0)) {
+			std::cout << "shoot sfx faled to play" << std::endl;
+		}
+
+		//increment the index by 1
+		ShootSFXIndex++;
+
+		//if the index goes 2 or highr then set back to 0 
+		if (ShootSFXIndex > 1) {
+			ShootSFXIndex = 0;
+		}
 	}
 }
 
@@ -131,6 +190,24 @@ void Player::Update()
 
 	else {
 		bOverlapDetected = false;
+	}
+
+	float WallBot = 450.0f;
+	float WallTop = 0.0f;
+	float WallLeft = 0.0f;
+	float WallRight = 920.0f;
+
+	if (Position.x > WallRight) {
+		Position.x = WallRight;
+	}
+	if (Position.x < WallLeft) {
+		Position.x = WallLeft;
+	}
+	if (Position.y < WallTop) {
+		Position.y = WallTop;
+	}
+	if (Position.y > WallBot) {
+		Position.y = WallBot;
 	}
 }
 

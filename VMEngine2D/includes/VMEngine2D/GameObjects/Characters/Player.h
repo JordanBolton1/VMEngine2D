@@ -1,6 +1,8 @@
 #pragma once
 #include "VMEngine2D/GameObjects/Character.h"
 
+struct Mix_Chunk;
+
 enum PlayerAnims : unsigned int {
 
 	BASE_FULL = 0,
@@ -16,6 +18,8 @@ public :
 
 	Player(Vector2 StartPosition, SDL_Renderer* Renderer);
 
+	virtual ~Player();
+
 	virtual void ProcessInput(Input* PlayerInput) override;
 
 	virtual void Update() override;
@@ -28,5 +32,11 @@ protected:
 	//play booster animation
 	unsigned int BoostersIndex;
 
+	// store the shoot audio - max 2
+	Mix_Chunk* sfx_Shoot[2] = { nullptr };
+
+	//the shoot sound effect too lay from the array
+	//unsigned int means it cant go negative
+	unsigned int ShootSFXIndex;
 };
 

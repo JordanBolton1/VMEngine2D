@@ -10,11 +10,23 @@ GameOverState::GameOverState(SDL_Window* Window, SDL_Renderer* Renderer) : GameS
 	GameOverText = nullptr;
 	ScoreText = nullptr;
 	RestartText = nullptr;
+
+	BGM = Mix_LoadMUS("Content/Audio/BG_Music/Menu.wav");
+
+	if (BGM == NULL) {
+		std::cout << "menu music couldnt load" << std::endl;
+	}
 }
 
 void GameOverState::BeginState()
 {
 	GameState::BeginState();
+
+	Mix_VolumeMusic(25);
+	//play music
+	if (Mix_PlayMusic(BGM, -1) == -1) {
+		std::cout << "couldnt play menu music" << std::endl;
+	}
 
 	//////GAME OVER TEXT//////
 	GameOverText = new Text(StateRenderer);
@@ -56,7 +68,7 @@ void GameOverState::ProcessInput(Input* PlayerInput)
 {
 	GameState::ProcessInput(PlayerInput);
 
-	if (PlayerInput->IsKeyDown(SDL_SCANCODE_SPACE)) {
+	if (PlayerInput->IsKeyDown(SDL_SCANCODE_R)) {
 		Game::GetGameInstance().GameScore = 0;
 		PlayState* NewState = new PlayState(StateWindow, StateRenderer);
 
@@ -81,4 +93,10 @@ void GameOverState::EndState()
 	GameOverText = nullptr;
 	ScoreText = nullptr;
 	RestartText = nullptr;
+
+	//stop and free the background music from memory
+	if (BGM != nullptr) {
+		Mix_HaltMusic();
+		Mix_FreeMusic(BGM);
+	}
 }
