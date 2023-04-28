@@ -154,6 +154,7 @@
     <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Collectable.cpp" />
     <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Enemy.cpp" />
     <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Player.cpp" />
+    <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Shield.cpp" />
     <ClCompile Include="source\VMEngine2D\GameObjects\Components.cpp" />
     <ClCompile Include="source\VMEngine2D\GameObjects\Components\CollisionComponent.cpp" />
     <ClCompile Include="source\VMEngine2D\GameObjects\Components\PhysicsComponent.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="source\VMEngine2D\GameState.cpp" />
     <ClCompile Include="source\VMEngine2D\GameStates\GameOver.cpp" />
     <ClCompile Include="source\VMEngine2D\GameStates\PlayState.cpp" />
+    <ClCompile Include="source\VMEngine2D\GameStates\SplashState.cpp" />
     <ClCompile Include="source\VMEngine2D\Input.cpp" />
     <ClCompile Include="source\VMEngine2D\Text.cpp" />
     <ClCompile Include="source\VMEngine2D\Texture.cpp" />
@@ -175,6 +177,7 @@
     <ClInclude Include="includes\VMEngine2D\GameObjects\Character.h" />
     <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Enemy.h" />
     <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Player.h" />
+    <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Shield.h" />
     <ClInclude Include="includes\VMEngine2D\GameObjects\Components.h" />
     <ClInclude Include="includes\VMEngine2D\GameObjects\Components\CollisionComponent.h" />
     <ClInclude Include="includes\VMEngine2D\GameObjects\Components\PhysicsComponent.h" />
@@ -183,6 +186,7 @@
     <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Collectable.h" />
     <ClInclude Include="includes\VMEngine2D\GameStates\GameOver.h" />
     <ClInclude Include="includes\VMEngine2D\GameStates\PlayState.h" />
+    <ClInclude Include="includes\VMEngine2D\GameStates\SplashState.h" />
     <ClInclude Include="includes\VMEngine2D\Input.h" />
     <ClInclude Include="includes\VMEngine2D\Text.h" />
     <ClInclude Include="includes\VMEngine2D\Texture.h" />

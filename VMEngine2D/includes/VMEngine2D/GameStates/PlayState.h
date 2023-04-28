@@ -28,12 +28,22 @@ protected:
 	//spawn enemy timer
 	double SpawnTimer;
 
-	//time to spaw enemies 
+	//time to spawn enemies 
 	double SpawnTime;
 
+	//spawn Collectable timer
 	double ColSpawnTimer;
 
+	//time to spawn collectabls
 	double ColSpawnTime;
+
+	//spawn shield timer
+	double ShldSpawnTimer;
+
+	//time to spaw shield
+	double ShldSpawnTime;
+
+
 
 	//this will stre the player
 	Player* PlayerCharacter;

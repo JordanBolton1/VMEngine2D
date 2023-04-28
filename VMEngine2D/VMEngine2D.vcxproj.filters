@@ -78,6 +78,12 @@
     <ClCompile Include="source\VMEngine2D\WindowMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\VMEngine2D\GameObjects\Characters\Shield.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VMEngine2D\GameStates\SplashState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\VMEngine2D\Game.h">
@@ -141,6 +147,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\VMEngine2D\GameObjects\Characters\Shield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\VMEngine2D\GameStates\SplashState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,7 +12,7 @@ Projectile::Projectile()
 	Acceleration = 1000.0f;
 	Direction = Vector2::Zero();
 	Rotation = 0.0;
-	Scale = 1.0f;
+	Scale = 0.50f;
 	TargetTag = "";
 
 	Animations = new AnimStateMachine();

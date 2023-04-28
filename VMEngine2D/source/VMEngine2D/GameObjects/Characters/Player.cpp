@@ -6,45 +6,74 @@
 #include "VMEngine2D/GameObjects/Components/CollisionComponent.h"
 #include "VMEngine2D/GameObjects/Projectile.h"
 #include "VMEngine2D/GameState.h"
+#include "VMEngine2D/GameObjects/Characters/Enemy.h"
 
 #include "SDL2/SDL_mixer.h"
 
 Player::Player(Vector2 StartPosition, SDL_Renderer* Renderer) :Character(StartPosition)
 {
 	BoostersIndex = PlayerAnims :: BOOSTERS_IDLE;
+	DmgIndex = PlayerAnims::BASE_FULL;
+	SheildIndex = PlayerAnims::EMPTY;
 	Scale = 1.5f;
 	Physics->MaxVelocity = 300.0f;
 	Physics->Drag = 5.0f;
 	ShootSFXIndex = 0;
-	Lives = 5;
+
+	Lives = 4;
 
 	Collision->Dimensions.Height = 42.0f;
 	Collision->Dimensions.Width = 42.0f;
 
 	Collision->Dimensions.Offset = Vector2(15.0f,15.0f);
 
-	STAnimationData AnimData1 = STAnimationData();
-	AnimData1.FPS = 0;
+	STAnimationData AnimData = STAnimationData();
+	AnimData.FPS = 0;
 
 	//add ship texture into animState - 0
-	AddAnimation(Renderer,"Content/MainShip/Base/Base - Full health.png", AnimData1);
+	AddAnimation(Renderer,"Content/MainShip/Base/Base - Full health.png", AnimData);
 
 	//add engine to ship into animState - 1
-	AddAnimation(Renderer, "Content/MainShip/Engine/Base Engine.png", AnimData1);
+	AddAnimation(Renderer, "Content/MainShip/Engine/Base Engine.png", AnimData);
 
 	//update animData to handle animations
-	AnimData1.FPS = 24;
-	AnimData1.MaxFrames = 3;
-	AnimData1.EndFrame = 2;
+	AnimData.FPS = 24;
+	AnimData.MaxFrames = 3;
+	AnimData.EndFrame = 2;
 
 	//add booster idle animation to animastate - 2
-	AddAnimation(Renderer, "Content/MainShip/Engine Effects/Base Engine - Idle.png", AnimData1);
+	AddAnimation(Renderer, "Content/MainShip/Engine Effects/Base Engine - Idle.png", AnimData);
 	
-	AnimData1.MaxFrames = 4;
-	AnimData1.EndFrame = 3;
+	AnimData.MaxFrames = 4;
+	AnimData.EndFrame = 3;
 
 	//update animData to handle engine powered
-	AddAnimation(Renderer, "Content/MainShip/Engine Effects/Base Engine - Powering.png",AnimData1);
+	AddAnimation(Renderer, "Content/MainShip/Engine Effects/Base Engine - Powering.png", AnimData);
+
+
+	//Update AnimData to handle the Shield animation
+	AnimData.FPS = 24;
+	AnimData.MaxFrames = 12;
+	AnimData.EndFrame = 11;
+
+	//Add the Shield animation to AnimState - 4
+	AddAnimation(Renderer, "Content/MainShip/Shields/Round Shield.png", AnimData);
+
+	//Adding in the damaged variants
+	AnimData.FPS = 0;
+	AnimData.MaxFrames = 1;
+	AnimData.EndFrame = 0;
+
+	//Add the small damage sprite to AnimState - 5
+	AddAnimation(Renderer, "Content/MainShip/Base/Base - Slight damage.png", AnimData);
+
+	//Add the medium damage sprite to AnimState - 6
+	AddAnimation(Renderer, "Content/MainShip/Base/Base - Damaged.png", AnimData);
+
+	//Add the large damage sprite to AnimState - 7
+	AddAnimation(Renderer, "Content/MainShip/Base/Base - Very damaged.png", AnimData);
+
+
 
 	if (sfx_Shoot[0] == NULL) {
 		std::cout << "couldnt load audio" << std::endl;
@@ -160,19 +189,61 @@ void Player::Update()
 		bOverlapDetected = true;
 
 		//getting all overlapped enemis and destroy them
-		for (CollisionComponent* Enemy : Collision->GetOverLappedByTag("Enemy")) {
+		for (CollisionComponent* EnemyCol : Collision->GetOverLappedByTag("Enemy")) {
+			
+			Enemy* EnemyRef = dynamic_cast<Enemy*>(EnemyCol->GetOwner());
 			//if enemy is not being destroyed
-			if (!Enemy->GetOwner()->ShouldDestroy()) {
+
+			if (!EnemyCol->GetOwner()->ShouldDestroy()&& EnemyRef !=nullptr && !EnemyRef->isDestroyed ) {
 				std::cout << "KILLLLLL" << std::endl;
 				//destroy enemy
-				dynamic_cast<Character*>(Enemy->GetOwner())->RemoveLives(1);
+				dynamic_cast<Character*>(EnemyCol->GetOwner())->RemoveLives(1);
 				//remove life from player
 				RemoveLives(1);
+				//Check if player has shield and remove it
+				if (SheildIndex = PlayerAnims::SHIELD) {
+					SheildIndex = PlayerAnims::EMPTY;
+				}
 			}
 		}
 	}
-	else {
-		bOverlapDetected = false;
+
+	//Damage Anims
+	if (Lives == 4) {
+		DmgIndex = PlayerAnims::BASE_FULL;
+	}
+
+	if (Lives == 3) {
+		DmgIndex = PlayerAnims::BASE_DMG1;
+	}
+
+	if (Lives == 2) {
+		DmgIndex = PlayerAnims::BASE_DMG2;
+	}
+
+	if (Lives == 1) {
+		DmgIndex = PlayerAnims::BASE_DMG3;
+	}
+
+	//Add Shield
+	if (Collision->IsOverlappingTag("Shield")) {
+		bOverlapDetected = true;
+
+		//getting all overlapped collectibles and destroying them
+		for (CollisionComponent* Sheild : Collision->GetOverLappedByTag("Shield")) {
+			if (!Sheild->GetOwner()->ShouldDestroy()) {
+				dynamic_cast<Character*>(Sheild->GetOwner())->RemoveLives(1);
+				//Add Shield to Player so long as it is not max lives
+				if (Lives != MaxLives) {
+					//Check if Shield has already been applied
+					if (SheildIndex = PlayerAnims::EMPTY) {
+						SheildIndex = PlayerAnims::SHIELD;
+					}
+					AddLives(1);
+				}
+
+			}
+		}
 	}
 
 	if (Collision->IsOverlappingTag("Collectable")) {
@@ -214,14 +285,34 @@ void Player::Update()
 
 void Player::Draw(SDL_Renderer* Renderer)
 {
-	
+	//draw engine to the screen
+	CharacterAnimations->Draw(Renderer, PlayerAnims::ENGINE_BASE, Position, Rotation, Scale, bFlipped);
+
+	//draw ship to screen
+	CharacterAnimations->Draw(Renderer, DmgIndex, Position, Rotation, Scale, bFlipped);
+
+	//Offset the shield so it lines up with the player
+	Vector2 Shd_Offset = Vector2(-13.0f, -13.0f);
+
+	//Draw and play the relevant shield animation
+	CharacterAnimations->Draw(Renderer, SheildIndex, Position + Shd_Offset, Rotation, Scale, bFlipped);
 
 	//draw booster to the screen
-	CharacterAnimations->Draw(Renderer, BoostersIndex, Position,Rotation, Scale, bFlipped);
+	CharacterAnimations->Draw(Renderer, BoostersIndex, Position, Rotation, Scale, bFlipped);
 
-	//make sure the draw method still runs
-	Character::Draw(Renderer);
 
-	//draw engine to the screen
-	CharacterAnimations->Draw(Renderer, PlayerAnims::ENGINE_BASE, Position,Rotation, Scale, bFlipped);
+	
+}
+
+void Player::ActivateSheilds()
+{
+	if (SheildIndex = PlayerAnims::EMPTY) {
+		SheildIndex = PlayerAnims::SHIELD;
+	}
+}
+
+void Player::SetMaxLives()
+{
+
+	Lives = 5;
 }

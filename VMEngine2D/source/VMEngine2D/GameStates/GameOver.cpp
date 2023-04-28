@@ -57,7 +57,7 @@ void GameOverState::BeginState()
 
 	TextSettings.Size = 24;
 	TextSettings.Position = Vector2(240.0f, 250.0f);
-	TextSettings.TextStr = "Press Space To Restart";
+	TextSettings.TextStr = "Press R To Restart";
 
 	RestartText->InitText("Content/Fonts/dogica.ttf", TextSettings);
 

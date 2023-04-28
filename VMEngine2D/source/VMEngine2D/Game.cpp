@@ -5,6 +5,7 @@
 #include "VMEngine2D/GameState.h"
 #include "VMEngine2D/GameStates/PlayState.h"
 #include "VMEngine2D/WindowMenu.h"
+#include "VMEngine2D/GameStates/SplashState.h"
 
 #include "SDL2/SDL_ttf.h"
 #include "SDL2/SDL_mixer.h"
@@ -162,7 +163,7 @@ void Game::Update()
 	//set the last tick time as the current time for the next frame
 	LastTickTime = CurrentTickTime;
 
-	//run the update of the curreent dtate and pass in flaot deltatime
+	//run the update of the curreent state and pass in flaot deltatime
 	GameStates->GetCurrentState()->Update(GetFDeltaTime());
 
 }
@@ -236,7 +237,7 @@ void Game::CloseGame()
 void Game::BeginPlay()
 {
 	cout << "Load Game Assets..." << endl;
-	PlayState* StartingState = new PlayState(SdlWindow, SdlRenderer);
+	SplashState* StartingState = new SplashState(SdlWindow, SdlRenderer);
 	//create a game state machine and
 	GameStates = new GameStateMachine(StartingState);
 

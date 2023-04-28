@@ -3,7 +3,11 @@
 
 enum EnemyAnims : unsigned int {
 	BASE = 0,
-	BOOSTERS= 1
+	BOOSTERS= 1,
+	DESTROYED =2,
+	BASE2 = 3,
+	BOOSTERS2 = 4,
+	DESTROYED2 = 5
 };
 
 class Enemy : public Character {
@@ -16,5 +20,19 @@ public:
 
 	virtual void Draw(SDL_Renderer* Renderer) override;
 
+public:
+
+	bool isDestroyed;
+
+	//Store animations for the enemy type and destruction anims
+	EnemyAnims EnemyType;
+
+	
+
 private:
+
+protected:
+
+	float deathTimer;
+
 };
