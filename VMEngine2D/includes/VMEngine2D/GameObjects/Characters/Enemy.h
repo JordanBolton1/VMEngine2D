@@ -3,10 +3,9 @@
 
 enum EnemyAnims : unsigned int {
 	BASE = 0,
-	BOOSTERS= 1,
-	DESTROYED =2,
-	BASE2 = 3,
-	//BOOSTERS2 = 4,
+	BASE2 = 1,
+	BOOSTERS= 2,
+	DESTROYED =3,
 	DESTROYED2 = 4
 };
 
@@ -26,8 +25,6 @@ public:
 
 	//Store animations for the enemy type and destruction anims
 	EnemyAnims EnemyType;
-
-	
 
 private:
 

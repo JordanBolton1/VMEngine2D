@@ -20,7 +20,7 @@ PlayState::PlayState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Win
 	ColSpawnTimer = 0.0;
 	ShldSpawnTime = 15.0;
 	ShldSpawnTimer = 0.0;
-	SpawnTimeBig = 1.0;
+	SpawnTimeBig = 15.0;
 	SpawnTimerBig = 0.0;
 	
 

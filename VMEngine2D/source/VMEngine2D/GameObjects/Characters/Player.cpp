@@ -135,11 +135,11 @@ void Player::ProcessInput(Input* PlayerInput)
 	static float FireTimer = 0.05f;
 	FireTimer += Game::GetGameInstance().GetFDeltaTime();
 
-	if (PlayerInput->IsKeyDown(SDL_SCANCODE_SPACE) && FireTimer >= 0.1f) {
+	if (PlayerInput->IsKeyDown(SDL_SCANCODE_SPACE) && FireTimer >= 0.30f) {
 		Projectile* P = new Projectile();
 
 		P->Position = Position;
-		P->Position.x += 15.0f;
+		P->Position.x += 10.0f;
 		P->Position.y += 10.0f;
 		P->Acceleration = 1000.0f;
 		P->Direction = Vector2(0.0f, -1.0f);
@@ -150,7 +150,7 @@ void Player::ProcessInput(Input* PlayerInput)
 		P = new Projectile();
 
 		P->Position = Position;
-		P->Position.x += 45.0f;
+		P->Position.x += 40.0f;
 		P->Position.y += 10.0f;
 		P->Acceleration = 1000.0f;
 		P->Direction = Vector2(0.0f, -1.0f);
@@ -255,6 +255,24 @@ void Player::Update()
 				std::cout << "Good Job!" << std::endl;
 				//destroy enemy
 				dynamic_cast<Character*>(Collectable->GetOwner())->RemoveLives(1);
+			}
+		}
+	}
+
+	//Enemy Projectile Collision
+	if (Collision->IsOverlappingTag("Player")) {
+		bOverlapDetected = true;
+
+		//getting all overlapped enemy projectiles and destroying them
+		for (CollisionComponent* Projectile : Collision->GetOverLappedByTag("Player")) {
+			if (!Projectile->GetOwner()->ShouldDestroy()) {
+				dynamic_cast<Character*>(Projectile->GetOwner())->RemoveLives(1);
+				//Remove life from player
+				RemoveLives(1);
+				//Check if player has shield and remove it
+				if (SheildIndex = PlayerAnims::SHIELD) {
+					SheildIndex = PlayerAnims::EMPTY;
+				}
 			}
 		}
 	}

@@ -4,6 +4,7 @@
 #include "VMEngine2D/GameObjects/Components/PhysicsComponent.h"
 #include "VMEngine2D/GameObjects/Components/CollisionComponent.h"
 #include "VMEngine2D/GameObjects/Projectile.h"
+#include "VMEngine2D/GameState.h"
 
 Enemy::Enemy(EnemyAnims EnemyType, Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPosition)
 {
@@ -26,6 +27,9 @@ Enemy::Enemy(EnemyAnims EnemyType, Vector2 StartPosition, SDL_Renderer* Renderer
 	//add the ship
 	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Bomber - Base.png", Animdata);
 
+	//add the ship
+	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Fighter - Base.png", Animdata);
+
 	//set anim data for the booster animation
 	Animdata.FPS = 24;
 	Animdata.MaxFrames = 8;
@@ -39,22 +43,11 @@ Enemy::Enemy(EnemyAnims EnemyType, Vector2 StartPosition, SDL_Renderer* Renderer
 	Animdata.EndFrame = 15;
 
 	AddAnimation(Renderer, "Content/Narian/Destruction/Nairan - Bomber -  Destruction.png", Animdata);
-
-	Animdata.FPS = 0;
-	//add the ship
-	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Fighter - Base.png", Animdata);
-
-	//set anim data for the booster animation
-	//Animdata.FPS = 24;
-	//Animdata.MaxFrames = 8;
-	//Animdata.EndFrame = 7;
-
-	//AddAnimation(Renderer, "Content/Narian/Engine Base/Nairan - Fighter - Engine.png", Animdata);
-
+	
 	//add destruction animation
 	Animdata.FPS = 24;
-	Animdata.MaxFrames = 16;
-	Animdata.EndFrame = 15;
+	Animdata.MaxFrames = 15;
+	Animdata.EndFrame = 14;
 
 	AddAnimation(Renderer, "Content/Narian/Destruction/Nairan - Fighter -  Destruction.png", Animdata);
 
@@ -98,6 +91,39 @@ void Enemy::Update()
 
 		}
 	}
+
+	//Fire a projectile if not destroyed already
+	if (EnemyType == EnemyAnims::BASE2 && isDestroyed == false) {
+		//how long the enemy has to wait in-between shots
+		static float FireTimer = 3.0f;
+		FireTimer += Game::GetGameInstance().GetFDeltaTime();
+
+		if (FireTimer > 3.0f) {
+			//Fire Projectile
+			Projectile* E = new Projectile();
+
+			//Setting up neccessary information
+			E->Position = Position;
+			E->Position.x += 14.0f;
+			E->Position.y += 60.0f;
+			E->Rotation = 180.0f;
+			E->Acceleration = 1000.0f;
+			E->Direction = Vector2(0.0f, 1.0f);
+			E->TargetTag = "Player";
+
+			//Spawning Projectile
+			Game::GetGameInstance().GetGameStates()->GetCurrentState()->SpawnGameObject(E);
+			std::cout << "enemy projectile spawned" << std::endl;
+			//Reset Firing Timer
+			FireTimer = 0.0f;
+		}
+
+		else
+		{
+			std::cout << "enemy projectile failed" << std::endl;
+		}
+	}
+
 }
 
 	

@@ -12,8 +12,10 @@ Projectile::Projectile()
 	Acceleration = 1000.0f;
 	Direction = Vector2::Zero();
 	Rotation = 0.0;
-	Scale = 0.50f;
+	Scale = 1.0f;
 	TargetTag = "";
+	ProjIndex = EmptyProj;
+	ProjOffset = Vector2::Zero();
 
 	Animations = new AnimStateMachine();
 
@@ -36,6 +38,13 @@ Projectile::Projectile()
 	SDL_Renderer* R = Game::GetGameInstance().GetGameStates()->GetCurrentState()->GetRenderer();
 
 	Animations->AddAnimation(R, "Content/MainShip/Projectiles/Projectile - Big Space Gun.png", AnimData);
+
+	AnimData.FPS = 24;
+	AnimData.MaxFrames = 4;
+	AnimData.EndFrame = 3;
+	AnimData.StartFrame = 0;
+
+	Animations->AddAnimation(R, "Content/MainShip/Projectiles/Nairan - Rocket.png", AnimData);
 }
 
 Projectile::~Projectile()
@@ -47,6 +56,8 @@ Projectile::~Projectile()
 void Projectile::Update()
 {
 	GameObject::Update();
+
+	DeathTimer -= Game::GetGameInstance().GetFDeltaTime();
 
 	Physics->AddForce(Direction, Acceleration);
 
@@ -61,6 +72,11 @@ void Projectile::Update()
 			}
 		}
 	}
+
+	if (DeathTimer <= 0.0f) {
+		this->DestroyGameObject();
+	}
+	
 }
 
 void Projectile::Draw(SDL_Renderer* Renderer)

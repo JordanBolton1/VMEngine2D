@@ -5,6 +5,12 @@ class AnimStateMachine;
 class PhysicsComponent;
 class CollisionComponent;
 
+enum ProjAnims : unsigned int {
+	PlayerProj = 0,
+	EnemyProj = 1,
+	EmptyProj = 2
+};
+
 class Projectile : public GameObject {
 
 public:
@@ -29,6 +35,12 @@ public:
 
 	//any char that has this tag will take dmage
 	const char* TargetTag;
+
+	//Store the different projectiles
+	unsigned int ProjIndex;
+
+	//Where the projectile is fired from
+	Vector2 ProjOffset;
 
 
 protected:
