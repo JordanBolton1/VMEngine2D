@@ -43,6 +43,12 @@ protected:
 	//time to spaw shield
 	double ShldSpawnTime;
 
+	//spawn shield timer
+	double SpawnTimerBig;
+
+	//time to spaw shield
+	double SpawnTimeBig;
+
 
 
 	//this will stre the player

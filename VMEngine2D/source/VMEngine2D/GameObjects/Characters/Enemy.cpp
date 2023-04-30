@@ -3,8 +3,9 @@
 #include "VMEngine2D/Game.h"
 #include "VMEngine2D/GameObjects/Components/PhysicsComponent.h"
 #include "VMEngine2D/GameObjects/Components/CollisionComponent.h"
+#include "VMEngine2D/GameObjects/Projectile.h"
 
-Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPosition)
+Enemy::Enemy(EnemyAnims EnemyType, Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPosition)
 {
 	Tag = "Enemy";
 	this->EnemyType = EnemyType;
@@ -21,7 +22,7 @@ Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPo
 	Collision->Dimensions.Offset = Vector2(20.0f, 20.0f);
 
 	STAnimationData Animdata = STAnimationData();
-
+	Animdata.FPS = 0;
 	//add the ship
 	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Bomber - Base.png", Animdata);
 
@@ -39,22 +40,23 @@ Enemy::Enemy(Vector2 StartPosition, SDL_Renderer* Renderer) : Character (StartPo
 
 	AddAnimation(Renderer, "Content/Narian/Destruction/Nairan - Bomber -  Destruction.png", Animdata);
 
+	Animdata.FPS = 0;
 	//add the ship
-	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Dreadnought - Base.png", Animdata);
+	AddAnimation(Renderer, "Content/Narian/Base/Nairan - Fighter - Base.png", Animdata);
 
 	//set anim data for the booster animation
-	Animdata.FPS = 24;
-	Animdata.MaxFrames = 8;
-	Animdata.EndFrame = 7;
+	//Animdata.FPS = 24;
+	//Animdata.MaxFrames = 8;
+	//Animdata.EndFrame = 7;
 
-	AddAnimation(Renderer, "Content/Narian/Engine Base/Nairan - Dreadnought - Engine.png", Animdata);
+	//AddAnimation(Renderer, "Content/Narian/Engine Base/Nairan - Fighter - Engine.png", Animdata);
 
 	//add destruction animation
 	Animdata.FPS = 24;
-	Animdata.MaxFrames = 18;
-	Animdata.EndFrame = 17;
+	Animdata.MaxFrames = 16;
+	Animdata.EndFrame = 15;
 
-	AddAnimation(Renderer, "Content/Narian/Destruction/Nairan - Dreadnought -  Destruction.png", Animdata);
+	AddAnimation(Renderer, "Content/Narian/Destruction/Nairan - Fighter -  Destruction.png", Animdata);
 
 
 }
@@ -98,10 +100,26 @@ void Enemy::Update()
 	}
 }
 
+	
+
 void Enemy::Draw(SDL_Renderer* Renderer)
 {
-	//draw the boposters
-	CharacterAnimations->Draw(Renderer, EnemyAnims::BOOSTERS, Position, Rotation, Scale, bFlipped);
-	//draw the main ship
-	Character::Draw(Renderer);
+	//draw the enemy
+	if (isDestroyed != true) {
+		CharacterAnimations->Draw(Renderer, EnemyType, Position, Rotation, Scale, bFlipped);
+
+		//draw the boosters
+		CharacterAnimations->Draw(Renderer, EnemyAnims::BOOSTERS, Position, Rotation, Scale, bFlipped);
+
+	}
+	else {
+		//Check the enemy type and play the appropriate destruction animation
+		if (EnemyType == EnemyAnims::BASE) {
+			CharacterAnimations->Draw(Renderer, EnemyAnims::DESTROYED, Position, Rotation, Scale, bFlipped);
+		}
+		else if (EnemyType == EnemyAnims::BASE2) {
+			CharacterAnimations->Draw(Renderer, EnemyAnims::DESTROYED2, Position, Rotation, Scale, bFlipped);
+		}
+		
+	}
 }

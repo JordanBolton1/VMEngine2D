@@ -20,6 +20,8 @@ PlayState::PlayState(SDL_Window* Window, SDL_Renderer* Renderer) : GameState(Win
 	ColSpawnTimer = 0.0;
 	ShldSpawnTime = 15.0;
 	ShldSpawnTimer = 0.0;
+	SpawnTimeBig = 1.0;
+	SpawnTimerBig = 0.0;
 	
 
 	BGAnims = new AnimStateMachine();
@@ -116,6 +118,7 @@ void PlayState::Update(float DeltaTime)
 	SpawnTimer += DeltaTime;
 	ColSpawnTimer += DeltaTime;
 	ShldSpawnTimer += DeltaTime;
+	SpawnTimerBig += DeltaTime;
 
 	///ENEMY SPAWNER///
 
@@ -134,10 +137,10 @@ void PlayState::Update(float DeltaTime)
 		int SpawnEnemyX = rand() % WinWidth;
 
 		//spawn an enemy based on a randomsreen x location
-		Enemy* NewEnemy = new Enemy(Vector2(SpawnEnemyX, -128.0f), StateRenderer);
+		Enemy* Enemy1 = new Enemy(EnemyAnims::BASE,Vector2(SpawnEnemyX, -128.0f), StateRenderer);
 
 		//add the enemy to the game object stack
-		SpawnGameObject(NewEnemy);
+		SpawnGameObject(Enemy1);
 
 		//reset timer to 0 and start again 
 		SpawnTimer = 0.0;
@@ -147,6 +150,33 @@ void PlayState::Update(float DeltaTime)
 		if (SpawnTime < 1.0) {
 			SpawnTime = 1.0;
 		}
+	}
+
+	///BIG ENEMY SPAWNER///
+
+	if (SpawnTimerBig > SpawnTimeBig) {
+		//set up variable3s to  recieve the app window width and height
+		int WinWidth, WinHeight = 0;
+		//use sdl function to set the dimnsions
+		SDL_GetWindowSize(StateWindow, &WinWidth, &WinHeight);
+
+		//increase window wdth by 1
+		WinWidth += 1;
+		WinWidth -= 128;
+
+		//get a random number between 0 and window width
+		//rand() gets random number between 0 and numbr after %
+		int SpawnEnemyX2 = rand() % WinWidth;
+
+		//spawn an enemy based on a randomsreen x location
+		Enemy* Enemy2 = new Enemy(EnemyAnims::BASE2, Vector2(SpawnEnemyX2, -128.0f), StateRenderer);
+
+		//add the enemy to the game object stack
+		SpawnGameObject(Enemy2);
+
+		//reset timer to 0 and start again 
+		SpawnTimerBig = 0.0;
+	
 	}
 
 	///SHIELD SPAWNER///
@@ -250,6 +280,6 @@ void PlayState::EndState()
 	if (BGM != nullptr) {
 		Mix_HaltMusic();
 		Mix_FreeMusic(BGM);
-	}
+	}  
 
 }

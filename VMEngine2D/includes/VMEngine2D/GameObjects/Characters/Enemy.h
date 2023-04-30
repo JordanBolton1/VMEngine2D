@@ -6,14 +6,14 @@ enum EnemyAnims : unsigned int {
 	BOOSTERS= 1,
 	DESTROYED =2,
 	BASE2 = 3,
-	BOOSTERS2 = 4,
-	DESTROYED2 = 5
+	//BOOSTERS2 = 4,
+	DESTROYED2 = 4
 };
 
 class Enemy : public Character {
 
 public: 
-	Enemy(Vector2 StartPosition, SDL_Renderer*Renderer);
+	Enemy(EnemyAnims EnemyType,Vector2 StartPosition, SDL_Renderer*Renderer);
 
 
 	virtual void Update() override;
